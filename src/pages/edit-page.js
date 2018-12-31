@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import styled from 'styled-components'
 import brace from 'brace'
 import AceEditor from 'react-ace'
-import { Body, Header, Video } from "../components/Subject/SubjectStyles";
+import { Body, Header, Video, Text } from "../components/Subject/SubjectStyles";
 import Checkbox from "../components/Subject/Checkbox";
 import { Parser } from "html-to-react";
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
@@ -20,11 +20,14 @@ const EditorContainer = styled.div`
 `
 
 const editorTypes = (item)=> {
+    console.log(item.type)
     switch(item.type) {
         case "header":
             return <Header>{item.props.children}</Header>
         case "checkbox":
             return <Checkbox>{item.props.children}</Checkbox>
+        case "text":
+            return <Text>{item.props.children}</Text>
         default: 
             return 
     }
@@ -72,6 +75,8 @@ export default class editPage extends React.Component {
           editorProps={{ $blockScrolling: true }}
           width="500px"
           height="200px"
+          fontSize={14}
+          showGutter={false}
 
         />
         

@@ -73,6 +73,8 @@ export const Header = styled.h1`
   margin-top: 50px;
 `;
 
+export const Text = styled.p``;
+
 export const Body = props => {
   return <Wrapper>{props.children}</Wrapper>;
 };

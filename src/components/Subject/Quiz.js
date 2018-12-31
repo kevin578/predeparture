@@ -26,16 +26,6 @@ const QuestionText = styled.h2`
   margin-top: 50px;
 `;
 
-export const formAnimation = keyframes`
-  from {
-    transform: scale(0);
-
-  }
-  to {
-    transform: scale(1);
-  }
-`;
-
 const MultipleChoiceConainter = styled.div`
   margin-top: 25px;
 `;
