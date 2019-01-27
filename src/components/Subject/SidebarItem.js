@@ -20,12 +20,14 @@ const Wrapper = styled.div`
   transition: 0.5s all;
   display: flex;
   justify-content: space-between;
+  line-height: 45px;
 `;
 
 const ItemName = styled.p`
   margin-left: 15px;
   margin-right: 10px;
   width: 100%;
+  font-size: 14px;
 `;
 
 class SidebarItem extends React.Component {

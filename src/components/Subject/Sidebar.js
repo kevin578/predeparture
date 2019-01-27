@@ -8,7 +8,7 @@ import media from "./mediaQueries";
 const Wrapper = styled.section`
   width: 340px;
   height: 100%;
-  background: #d8d8d8;
+  background: #EAEBF7;
   position: fixed;
   overflow: auto;
   ${media.tablet`display: none;`}
@@ -17,21 +17,15 @@ const Wrapper = styled.section`
 const SidebarSubject = styled.div`
   position: fixed;
   width: 340px;
-  height: 80px;
-  background: #a43ab4;
+  height: 60px;
+  background: transparent;
   text-align: center;
   border-top: 2px solid #979797;
   border-bottom: 1px solid #979797;
 `;
-const SubjectImage = styled.img`
-  opacity: 0;
-  position: absolute;
-  left: 2px;
-`;
 
 const SidebarSubjectName = styled.p`
-  color: white;
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 18px;
   font-weight: 600;
   position: relative;
@@ -39,7 +33,7 @@ const SidebarSubjectName = styled.p`
 `;
 
 const SidebarItemContainer = styled.div`
-  margin-top: 80px;
+  margin-top: 60px;
   padding-bottom: 100px;
 `;
 
@@ -83,7 +77,8 @@ class Sidebar extends React.Component {
           index={index}
           // completed={this.getColor(step.key)}
         >
-          {index + 1}. {step.props.title}
+          {/* remove this ternery later */}
+          {index + 1}. {step.props ? step.props.title : step.title}
         </SidebarItem>
       );
     });

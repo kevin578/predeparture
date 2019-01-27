@@ -1,34 +1,44 @@
-import { Link } from 'gatsby'
-import PropTypes from 'prop-types'
-import React from 'react'
+import { Link } from 'gatsby';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+const Wrapper = styled.nav`
+  width: 100%;
+  height: 60px;
+  background: #345afb;
+  display: flex;
+  justify-content: space-between;
+`
+const Title = styled.h1`
+color: #fff;
+line-height: 60px;
+font-size: 30px;
+margin-left: 60px;
+`
+
+const Links = styled.div`
+  display: flex;
+  color: #fff;
+  justify-content: space-around;
+  height: 60px;
+  line-height: 60px;
+  margin-right: 100px;
+  width: 300px;
+`;
+const HeaderLink = styled.a`
+
+`;
 
 const SiteHeader = ({ siteTitle }) => (
-  <div
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
-      }}
-    >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-    </div>
-  </div>
+  <Wrapper>
+    <Title>{siteTitle}</Title>
+    <Links>
+        <HeaderLink>Students</HeaderLink>
+        <HeaderLink>Docs</HeaderLink>
+        <HeaderLink>Logout</HeaderLink>
+    </Links>
+  </Wrapper>
 )
 
 SiteHeader.propTypes = {
