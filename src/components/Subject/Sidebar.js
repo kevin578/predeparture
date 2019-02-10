@@ -11,6 +11,7 @@ const Wrapper = styled.section`
   background: #EAEBF7;
   position: fixed;
   overflow: auto;
+  margin-top: 60px;
   ${media.tablet`display: none;`}
 `;
 

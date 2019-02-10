@@ -18,13 +18,15 @@ import Sidebar from '../components/Subject/Sidebar'
 
 const dummyArray = [{ title: 'Get your passport', key: 'passport' }]
 
-const header = Header
 
 const Wrapper = styled.div`
 margin-top: -1px;
   display: grid;
   grid-template-columns: 400px 525px auto;
-  grid-template-rows: 70px 60px 400px 400px;
+  grid-template-rows: 100px 120px 180px 50px 500px;
+`
+
+const Navbar = styled(SiteHeader)`
 `
 
 const TitleLabel = styled.label`
@@ -45,23 +47,30 @@ const TitleInput = styled.input`
 `
 
 const Editor = styled(AceEditor)`
+
 `
 
 const EditorContainer = styled.div`
-  margin-top: 20px;
   height: 200px;
   grid-column-start: 2;
+  grid-row-start: 2;
 `
 
 const Button = styled.div`
   width: 120px;
   height: 40px;
+  font-size: 12px;
+  color: #fff;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
 `
 
 const NewPageButton = styled(Button)`
 background: #504DB7;
   grid-column-start: 3;
   grid-row-start: 2;
+  margin-top: 50px;
 `
 const DeletePageButton = styled(Button)`
     background: #D37E7E;
@@ -69,7 +78,17 @@ const DeletePageButton = styled(Button)`
     grid-row-start: 3;
 `
 
-const Content = styled.div``
+const SaveButton = styled(Button)`
+    background: #7ED399;
+    grid-column-start: 2;
+    grid-row-start: 4;
+`
+
+const Content = styled.div`
+width: 800px;
+grid-column-start: 2;
+  grid-row-start: 5;
+`
 
 const editorTypes = item => {
   console.log(item.type)
@@ -109,8 +128,8 @@ export default class editPage extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <SiteHeader />
-        <Wrapper>
+    <Wrapper>
+        <Navbar />
           <Sidebar
             title="Tasks"
             steps={dummyArray}
@@ -132,8 +151,9 @@ export default class editPage extends React.Component {
               showGutter={false}
             />
           </EditorContainer>
-          <NewPageButton />
-          <DeletePageButton />
+          <NewPageButton>Add New Page</NewPageButton>
+          <DeletePageButton>Delete Page</DeletePageButton>
+          <SaveButton>Save</SaveButton>
           <Content>{this.getContent()}</Content>
         </Wrapper>
       </React.Fragment>

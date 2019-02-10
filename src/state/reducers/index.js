@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
-import pageReducer from "./pageReducer.js"
+import userReducer from "./userReducer";
+import pageReducer from "./pageReducer";
+
 
 export default combineReducers({
+    user: userReducer,
     page: pageReducer
 })

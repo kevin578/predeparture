@@ -5,9 +5,15 @@ import Subject from '../components/Subject/Subject'
 import Image from '../components/image'
 import SEO from '../components/seo'
 import { Body, Header, Video } from '../components/Subject/SubjectStyles'
-import Button from '../components/Subject/Button'
+import Button from '../components/Subject/Button';
+
+
+
 
 const IndexPage = location => (
+
+  
+
   <React.Fragment>
     <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
     <Subject

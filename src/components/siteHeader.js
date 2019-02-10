@@ -7,6 +7,8 @@ const Wrapper = styled.nav`
   width: 100%;
   height: 60px;
   background: #345afb;
+  position: fixed;
+  z-index: 99;
   display: flex;
   justify-content: space-between;
 `
