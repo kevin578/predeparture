@@ -4,7 +4,7 @@ const defaultUserState = {
 
 export default function userReducer(state = defaultUserState, action) {
   switch (action.type) {
-    case 'IS_LOGGED_IN':
+    case 'SET_LOGIN_STATE':
       return { ...state, isLoggedIn: action.payload }
     default:
       return state

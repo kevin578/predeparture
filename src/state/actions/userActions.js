@@ -1,4 +1,5 @@
-export const isLoggedIn = status => ({
-    type: "IS_LOGGED_IN",
+export const setLoginState = status => ({
+    type: "SET_LOGIN_STATE",
     payload: status
 }); 
+
