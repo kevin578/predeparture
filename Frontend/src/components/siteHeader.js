@@ -5,7 +5,8 @@ import { Link, navigate } from "gatsby";
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Amplify, { Auth } from "aws-amplify";
-import { setLoginState, setContent } from "../state/actions";
+import { setLoginState, setContent, setPage } from "../state/actions";
+import queryString from "query-string";
 
 Amplify.configure({
   Auth: {
@@ -61,6 +62,7 @@ class SiteHeader extends Component {
   componentDidMount() {
     this.getAuthState();
     this.getContent();
+    this.setPageNumber();
   }
 
   getAuthState = async ()=> {
@@ -70,8 +72,13 @@ class SiteHeader extends Component {
 
   getContent = async ()=> {
     const content = await axios.get("https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent");
-    this.props.setContent(content.data);
-    
+    this.props.setContent(content.data); 
+  }
+
+  setPageNumber = ()=> {
+    const  { pageNumber } = queryString.parse(window.location.search);
+    this.props.setPage(pageNumber);
+
   }
   logout = async ()=> {
     await Auth.signOut();
@@ -105,4 +112,4 @@ const mapStateToProps = (state)=> ({
   content: state.content
 }) 
 
-export default connect(mapStateToProps, {setLoginState, setContent })(SiteHeader)
+export default connect(mapStateToProps, {setLoginState, setContent, setPage })(SiteHeader)

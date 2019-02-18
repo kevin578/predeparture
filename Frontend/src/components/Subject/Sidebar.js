@@ -76,6 +76,7 @@ class Sidebar extends React.Component {
         <SidebarItem
           key={step.key}
           index={index}
+          editor = {this.props.editor}
           // completed={this.getColor(step.key)}
         >
           {/* remove this ternery later */}

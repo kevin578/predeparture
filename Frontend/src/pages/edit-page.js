@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server'
 import styled from 'styled-components'
 import brace from 'brace'
 import AceEditor from 'react-ace'
+import axios from "axios";
 import { Body, Header, Video, Text } from '../components/Subject/SubjectStyles'
 import Checkbox from '../components/Subject/Checkbox'
 import { Parser } from 'html-to-react'
@@ -109,43 +110,73 @@ class editPage extends React.Component {
     super(props)
     this.state = {
       editorContent: '',
-      sidebarContent: ''
+      sidebarContent: '',
+      title: '',
+
     }
   }
 
-  onChange = newValue => {
+  componentDidMount() {
+    this.setContent();
+  }
+
+
+  setContent = async ()=> {
+    let content = await axios.get("https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent");
+    content = content.data;
+    console.log(content);
+    const {page} = this.props;
+    if (!(content[page.number])) return;
+    const title = content[page.number].title;
+    const editorContent = content[page.number].content
+    this.setState({title, editorContent})
+
+  }
+
+  onChange = event => {
+    const {name, value} = event.target;
+    this.setState({ [name]: value })
+  }
+
+  onEditorChange = newValue => {
     this.setState({ editorContent: newValue })
   }
 
   getContent = () => {
     const html = this.state.editorContent
-    console.log(this.state.editorContent);
     let editorArray = ReactHtmlParser(html)
-
     return editorArray.map(item => {
       return editorTypes(item)
     })
+  }
+
+  saveContent = ()=> {
+
   }
 
   render() {
     return (
       <React.Fragment>
     <Wrapper>
-        <Navbar />
+        <Navbar />  
           <Sidebar
             title="Tasks"
-            steps={this.props.content.contentFromDatabase}
+            steps={this.props.content.contentArray}
             subject={this.props.urlName}
           />
           <EditorContainer>
             <TitleLabel>Title:</TitleLabel>
-            <TitleInput />
+            <TitleInput 
+              value = {this.state.title}
+              onChange = {this.onChange}
+              name = "title"
+            />
             <Editor
               mode="html"
               theme="solarized_light"
-              onChange={this.onChange}
+              onChange={this.onEditorChange}
               value={this.state.editorContent}
-              name="UNIQUE_ID_OF_DIV"
+              name="editor"
               editorProps={{ $blockScrolling: true }}
               width="500px"
               height="200px"
@@ -155,7 +186,7 @@ class editPage extends React.Component {
           </EditorContainer>
           <NewPageButton>Add New Page</NewPageButton>
           <DeletePageButton>Delete Page</DeletePageButton>
-          <SaveButton>Save</SaveButton>
+          <SaveButton onClick = {this.saveContent}>Save</SaveButton>
           <Content>{this.getContent()}</Content>
         </Wrapper>
       </React.Fragment>
@@ -165,7 +196,8 @@ class editPage extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    content: state.content
+    content: state.content,
+    page: state.page
   }
 
 }

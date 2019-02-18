@@ -57,3 +57,10 @@ functions:
       - http:
           path: getContent
           method: get
+    
+  updateContent:       
+    handler: contentRoutes.updateContent
+    events:
+      - http:
+          path: updateContent
+          method: put

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { navigate } from "gatsby";
-import { resetAnswers } from '../../state/actions'
+import { resetAnswers } from '../../state/actions';
+import { updatePageNumber } from "../../functions";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -43,8 +43,7 @@ class SidebarItem extends React.Component {
 
   click = () => {
     //this.props.resetAnswers();
-    navigate(`/?pageNumber=${this.props.index}`);
-    window.scrollTo(0, 0);
+    updatePageNumber(this.props.index);
   };
  
 
@@ -53,7 +52,7 @@ class SidebarItem extends React.Component {
       <Wrapper
         onClick={this.click}
         completed={this.props.completed}
-        currentlySelected={(this.props.index == this.props.page)}
+        currentlySelected={(this.props.index == this.props.page.number)}
       >
         <ItemName>{this.props.children}</ItemName>
       </Wrapper>

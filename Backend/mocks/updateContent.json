@@ -1,0 +1,8 @@
+{
+"body": "{\r\n\t\"contentArray\": [{\r\n\t\t\t\"content\": \"<Header>First<\/Header><Text>Get a passport.<\/Text>\",\r\n\t\t\t\"key\": \"passport\",\r\n\t\t\t\"title\": \"Get a Passport\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"content\": \"<Header>Then<\/Header><Text>Go to the country.<\/Text>\",\r\n\t\t\t\"key\": \"go\",\r\n\t\t\t\"title\": \"Go to the country\"\r\n\t\t}\r\n\t]\r\n}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}
