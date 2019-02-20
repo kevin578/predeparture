@@ -24,7 +24,6 @@ export async function getContent(event, context, callback) {
 export async function updateContent(event, context) {
     const dynamodb = new AWS.DynamoDB();
     const data = JSON.parse(event.body);
-    
     const params = {
         TableName: "predeparture-content",
         Key: {
@@ -42,7 +41,7 @@ export async function updateContent(event, context) {
 
     try {
         let result = await dynamoDbLib.call("update",params);
-        return success(result.Item["content-array"]);
+        return success(result.Attributes["content-array"]);
       } catch (e) {
         return failure(e);
       }

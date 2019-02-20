@@ -17,7 +17,6 @@ export function updatePageNumber(pageNumber) {
   const url = pathname.includes("edit-page") ? `edit-page/?pageNumber=${pageNumber}` : `/?pageNumber=${pageNumber}`
   store.dispatch(setPage(pageNumber));
   navigate(url);
-  window.location.reload();
   window.scrollTo(0, 0)
 }
 

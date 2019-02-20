@@ -1,10 +1,12 @@
 import React from 'react'
-import {connect} from "react-redux";
+import { connect } from 'react-redux'
 import ReactDOMServer from 'react-dom/server'
 import styled from 'styled-components'
 import brace from 'brace'
 import AceEditor from 'react-ace'
-import axios from "axios";
+import Button from '@material-ui/core/Button';
+import axios from 'axios'
+import Modal from 'react-modal'
 import { Body, Header, Video, Text } from '../components/Subject/SubjectStyles'
 import Checkbox from '../components/Subject/Checkbox'
 import { Parser } from 'html-to-react'
@@ -17,19 +19,18 @@ import 'brace/mode/html'
 import 'brace/theme/solarized_light'
 import SiteHeader from '../components/siteHeader'
 import Sidebar from '../components/Subject/Sidebar'
-
-const dummyArray = [{ title: 'Get your passport', key: 'passport' }]
-
+import { setContent } from './../state/actions'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import short from 'short-uuid'
 
 const Wrapper = styled.div`
-margin-top: -1px;
+  margin-top: -1px;
   display: grid;
   grid-template-columns: 400px 525px auto;
   grid-template-rows: 100px 120px 180px 50px 500px;
 `
 
-const Navbar = styled(SiteHeader)`
-`
+const Navbar = styled(SiteHeader)``
 
 const TitleLabel = styled.label`
   margin-right: 15px;
@@ -48,9 +49,7 @@ const TitleInput = styled.input`
   }
 `
 
-const Editor = styled(AceEditor)`
-
-`
+const Editor = styled(AceEditor)``
 
 const EditorContainer = styled.div`
   height: 200px;
@@ -58,38 +57,90 @@ const EditorContainer = styled.div`
   grid-row-start: 2;
 `
 
-const Button = styled.div`
+const HomemadeButton = styled.div`
   width: 120px;
   height: 40px;
-  font-size: 12px;
+  font-size: 14px;
   color: #fff;
   line-height: 40px;
   text-align: center;
   cursor: pointer;
 `
 
-const NewPageButton = styled(Button)`
-background: #504DB7;
+const NewPageButton = styled(HomemadeButton)`
+  background: #504db7;
   grid-column-start: 3;
   grid-row-start: 2;
   margin-top: 50px;
 `
-const DeletePageButton = styled(Button)`
-    background: #D37E7E;
-    grid-column-start: 3;
-    grid-row-start: 3;
+const DeletePageButton = styled(HomemadeButton)`
+  background: #d37e7e;
+  grid-column-start: 3;
+  grid-row-start: 3;
 `
 
-const SaveButton = styled(Button)`
-    background: #7ED399;
-    grid-column-start: 2;
-    grid-row-start: 4;
+const SaveButton = styled(HomemadeButton)`
+  background: #7ed399;
+  grid-column-start: 2;
+  grid-row-start: 4;
+`
+
+const ErrorMessage = styled.p`
+  grid-column-start: 2;
+  grid-row-start: 4;
+  margin-top: 50px;
+  font-size: 14px;
+  color: #cc3300;
 `
 
 const Content = styled.div`
-width: 800px;
-grid-column-start: 2;
+  width: 800px;
+  grid-column-start: 2;
   grid-row-start: 5;
+`
+
+const Progress = styled(CircularProgress)`
+  && {
+    display: block;
+    position: relative;
+    top: 10px;
+    grid-column-start: 2;
+    grid-row-start: 4;
+  }
+`
+
+const customStyles = {
+  content: {
+    width: 380,
+    height: 200,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 150,
+    padding: 0
+  },
+  overlay: {
+    zIndex: 100 
+  }
+}
+
+const DeleteInstructions = styled.p`
+  background: #f2f2f2;
+  margin: 0px;
+  padding: 25px;
+`
+const DeleteButton = styled(HomemadeButton)`
+    background: #d37e7e;
+    width: 150px;
+
+`
+const GoBackButton = styled(HomemadeButton)`
+    background: #504db7;
+    width: 150px;
+`
+const ButtonContainer = styled.div`
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
 `
 
 const editorTypes = item => {
@@ -112,33 +163,49 @@ class editPage extends React.Component {
       editorContent: '',
       sidebarContent: '',
       title: '',
-
+      isSaving: false,
+      warning: '',
+      showDeleteModal: true,
+      href: window.location.href,
     }
   }
 
   componentDidMount() {
-    this.setContent();
+    this.loadContent()
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.page.number != this.state.href) {
+      this.setContent()
+      this.setState({ href: prevProps.page.number })
+    }
+  }
 
-  setContent = async ()=> {
-    let content = await axios.get("https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent");
-    content = content.data;
-    console.log(content);
-    const {page} = this.props;
-    if (!(content[page.number])) return;
-    const title = content[page.number].title;
+  loadContent = async () => {
+    const content = await axios.get(
+      'https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent'
+    )
+    this.props.setContent(content.data)
+    this.setContent()
+  }
+
+  setContent = async () => {
+    const { page } = this.props
+    const content = this.props.content.contentArray
+    if (!content[page.number]) return
+    const title = content[page.number].title
     const editorContent = content[page.number].content
-    this.setState({title, editorContent})
-
+    this.setState({ title, editorContent, content })
   }
 
   onChange = event => {
-    const {name, value} = event.target;
+    const { name, value } = event.target
+    window.onbeforeunload = () => ''
     this.setState({ [name]: value })
   }
 
   onEditorChange = newValue => {
+    window.onbeforeunload = () => ''
     this.setState({ editorContent: newValue })
   }
 
@@ -150,15 +217,66 @@ class editPage extends React.Component {
     })
   }
 
-  saveContent = ()=> {
+  newPage = () => {
+    const newItem = {
+      title: 'New Item',
+      key: short.generate(),
+      content: '<Header>New Item</Header>',
+    }
+    let { contentArray } = this.props.content
+    const { page } = this.props
+    contentArray.splice(page.number + 1, 0, newItem)
+    this.props.setContent(contentArray)
+  }
 
+  deleteItem = () => {
+    
+  }
+
+  saveContent = async () => {
+    const { editorContent, title } = this.state
+    const { page, setContent } = this.props
+    let newContent = this.props.content.contentArray
+    newContent[page.number].title = title
+    if (!title) return this.setState({ warning: 'Title cannot be blank.' })
+    if (!editorContent)
+      return this.setState({ warning: 'Content cannot be blank.' })
+    this.setState({ isSaving: true })
+    newContent[page.number].content = editorContent
+    this.setState({ warning: '' })
+    setContent(newContent)
+    try {
+      const response = await axios.put(
+        'https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/updateContent',
+        {
+          contentArray: newContent,
+        }
+      )
+    } catch (e) {
+      console.log(e)
+    }
+    this.setState({ isSaving: false })
+    window.onbeforeunload = null
+  }
+
+  getButton = () => {
+    if (this.state.isSaving) {
+      return <Progress />
+    } else {
+      return (
+        <React.Fragment>
+          <SaveButton onClick={this.saveContent}>Save</SaveButton>
+          <ErrorMessage>{this.state.warning}</ErrorMessage>
+        </React.Fragment>
+      )
+    }
   }
 
   render() {
     return (
       <React.Fragment>
-    <Wrapper>
-        <Navbar />  
+        <Wrapper>
+          <Navbar />
           <Sidebar
             title="Tasks"
             steps={this.props.content.contentArray}
@@ -166,10 +284,10 @@ class editPage extends React.Component {
           />
           <EditorContainer>
             <TitleLabel>Title:</TitleLabel>
-            <TitleInput 
-              value = {this.state.title}
-              onChange = {this.onChange}
-              name = "title"
+            <TitleInput
+              value={this.state.title}
+              onChange={this.onChange}
+              name="title"
             />
             <Editor
               mode="html"
@@ -184,9 +302,22 @@ class editPage extends React.Component {
               showGutter={false}
             />
           </EditorContainer>
-          <NewPageButton>Add New Page</NewPageButton>
-          <DeletePageButton>Delete Page</DeletePageButton>
-          <SaveButton onClick = {this.saveContent}>Save</SaveButton>
+          <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
+          <DeletePageButton onClick={()=> this.setState({showDeleteModal: true})}>
+            Delete Page
+          </DeletePageButton>
+          {this.getButton()}
+          <Modal
+            isOpen={this.state.showDeleteModal}
+            style={customStyles}
+            contentLabel="Delete Modal"
+          >
+            <DeleteInstructions>Are you sure you want to delete the item <em>{this.state.title}</em>?</DeleteInstructions>
+            <ButtonContainer>
+              <GoBackButton variant="contained" color="primary" onClick = {()=> this.setState({showDeleteModal: false})}>Nah, forget about it.</GoBackButton>
+              <DeleteButton variant="contained" color="secondary">Yes, delete it.</DeleteButton>
+            </ButtonContainer>
+          </Modal>
           <Content>{this.getContent()}</Content>
         </Wrapper>
       </React.Fragment>
@@ -197,11 +328,11 @@ class editPage extends React.Component {
 function mapStateToProps(state) {
   return {
     content: state.content,
-    page: state.page
+    page: state.page,
   }
-
 }
 
-export default connect(mapStateToProps)(editPage);
-
-
+export default connect(
+  mapStateToProps,
+  { setContent }
+)(editPage)

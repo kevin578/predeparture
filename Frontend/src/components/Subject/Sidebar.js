@@ -71,7 +71,7 @@ class Sidebar extends React.Component {
   // };
 
   getSidebarItems = () => {
-    return this.props.steps.map((step, index) => {
+    return this.props.content.contentArray.map((step, index) => {
       return (
         <SidebarItem
           key={step.key}
@@ -124,7 +124,8 @@ function mapStateToProps(state) {
     // subjectName: state.subject,
     // achievements: state.achievements,
     // subjectURL: state.subjectURL,
-    page: state.page
+    page: state.page,
+    content: state.content
   };
 }
 

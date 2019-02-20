@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import Modal from 'react-modal';
 import SiteHeader from '../components/siteHeader'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
@@ -39,6 +40,7 @@ const SubmitButton = styled(Button)`
     background: #345afb;
   }
 `
+
 
 const Progress = styled(CircularProgress)`
   && {
@@ -118,6 +120,7 @@ class Login extends Component {
         >
           Login
         </SubmitButton>
+
       )
     }
   }
