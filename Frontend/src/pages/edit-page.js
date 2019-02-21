@@ -19,9 +19,10 @@ import 'brace/mode/html'
 import 'brace/theme/solarized_light'
 import SiteHeader from '../components/siteHeader'
 import Sidebar from '../components/Subject/Sidebar'
-import { setContent } from './../state/actions'
+import { setContent, setPage } from './../state/actions'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import short from 'short-uuid'
+import short from 'short-uuid';
+import queryString from "query-string";
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -143,14 +144,15 @@ const ButtonContainer = styled.div`
   justify-content: space-around;
 `
 
-const editorTypes = item => {
+const editorTypes = (item, index) => {
+  const key = `${item.type}${index}`
   switch (item.type) {
     case 'header':
-      return <Header>{item.props.children}</Header>
+      return <Header key = {key}>{item.props.children}</Header>
     case 'checkbox':
-      return <Checkbox>{item.props.children}</Checkbox>
+      return <Checkbox key = {key} >{item.props.children}</Checkbox>
     case 'text':
-      return <Text>{item.props.children}</Text>
+      return <Text key = {key}>{item.props.children}</Text>
     default:
       return
   }
@@ -165,7 +167,7 @@ class editPage extends React.Component {
       title: '',
       isSaving: false,
       warning: '',
-      showDeleteModal: true,
+      showDeleteModal: false,
       href: window.location.href,
     }
   }
@@ -176,8 +178,16 @@ class editPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.page.number != this.state.href) {
+      const oldTitle = this.state.title;
+      const oldContent = this.state.editorContent;
+      const {pageNumber} = queryString.parse(prevProps.location.search)
       this.setContent()
       this.setState({ href: prevProps.page.number })
+      let  { contentArray } = prevProps.content;
+      if(!contentArray[pageNumber]) return;
+      contentArray[pageNumber].title = oldTitle;
+      contentArray[pageNumber].content = oldContent;
+      this.props.setContent(contentArray);
     }
   }
 
@@ -212,12 +222,13 @@ class editPage extends React.Component {
   getContent = () => {
     const html = this.state.editorContent
     let editorArray = ReactHtmlParser(html)
-    return editorArray.map(item => {
-      return editorTypes(item)
+    return editorArray.map((item, index) => {
+      return editorTypes(item, index)
     })
   }
 
   newPage = () => {
+    window.onbeforeunload = () => ''
     const newItem = {
       title: 'New Item',
       key: short.generate(),
@@ -230,7 +241,21 @@ class editPage extends React.Component {
   }
 
   deleteItem = () => {
-    
+    window.onbeforeunload = () => ''
+    const  { contentArray } = this.props.content;
+    const {page, setContent, setPage} = this.props;
+    const newContent = contentArray.filter((item, index)=> {
+      if(!(index === parseInt(page.number))) return item;
+    })
+    const newPageNumber = newPageNumber > 0 ? parseInt(page.number) - 1 : 0;
+    setContent(newContent);
+    setPage(newPageNumber);
+    this.setState({
+      title: newContent[newPageNumber].title,
+      content: newContent[newPageNumber].content,
+      showDeleteModal: false
+
+    })
   }
 
   saveContent = async () => {
@@ -311,11 +336,12 @@ class editPage extends React.Component {
             isOpen={this.state.showDeleteModal}
             style={customStyles}
             contentLabel="Delete Modal"
+            ariaHideApp={false}
           >
             <DeleteInstructions>Are you sure you want to delete the item <em>{this.state.title}</em>?</DeleteInstructions>
             <ButtonContainer>
-              <GoBackButton variant="contained" color="primary" onClick = {()=> this.setState({showDeleteModal: false})}>Nah, forget about it.</GoBackButton>
-              <DeleteButton variant="contained" color="secondary">Yes, delete it.</DeleteButton>
+              <GoBackButton onClick = {()=> this.setState({showDeleteModal: false})}>Nah, forget about it.</GoBackButton>
+              <DeleteButton onClick = {this.deleteItem}>Yes, delete it.</DeleteButton>
             </ButtonContainer>
           </Modal>
           <Content>{this.getContent()}</Content>
@@ -334,5 +360,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { setContent }
+  { setContent, setPage }
 )(editPage)
