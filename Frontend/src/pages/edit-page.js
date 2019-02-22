@@ -7,9 +7,6 @@ import AceEditor from 'react-ace'
 import Button from '@material-ui/core/Button';
 import axios from 'axios'
 import Modal from 'react-modal'
-import { Body, Header, Video, Text } from '../components/Subject/SubjectStyles'
-import Checkbox from '../components/Subject/Checkbox'
-import { Parser } from 'html-to-react'
 import ReactHtmlParser, {
   processNodes,
   convertNodeToElement,
@@ -23,6 +20,7 @@ import { setContent, setPage } from './../state/actions'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import short from 'short-uuid';
 import queryString from "query-string";
+import renderContent from "../lib/renderContent"
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -144,20 +142,6 @@ const ButtonContainer = styled.div`
   justify-content: space-around;
 `
 
-const editorTypes = (item, index) => {
-  const key = `${item.type}${index}`
-  switch (item.type) {
-    case 'header':
-      return <Header key = {key}>{item.props.children}</Header>
-    case 'checkbox':
-      return <Checkbox key = {key} >{item.props.children}</Checkbox>
-    case 'text':
-      return <Text key = {key}>{item.props.children}</Text>
-    default:
-      return
-  }
-}
-
 class editPage extends React.Component {
   constructor(props) {
     super(props)
@@ -217,14 +201,6 @@ class editPage extends React.Component {
   onEditorChange = newValue => {
     window.onbeforeunload = () => ''
     this.setState({ editorContent: newValue })
-  }
-
-  getContent = () => {
-    const html = this.state.editorContent
-    let editorArray = ReactHtmlParser(html)
-    return editorArray.map((item, index) => {
-      return editorTypes(item, index)
-    })
   }
 
   newPage = () => {
@@ -325,6 +301,10 @@ class editPage extends React.Component {
               height="200px"
               fontSize={14}
               showGutter={false}
+              wrapEnabled = {true}
+              setOptions = {{
+              indentedSoftWrap: false
+              }}
             />
           </EditorContainer>
           <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
@@ -344,7 +324,7 @@ class editPage extends React.Component {
               <DeleteButton onClick = {this.deleteItem}>Yes, delete it.</DeleteButton>
             </ButtonContainer>
           </Modal>
-          <Content>{this.getContent()}</Content>
+          <Content>{renderContent(this.state.editorContent)}</Content>
         </Wrapper>
       </React.Fragment>
     )

@@ -11,7 +11,7 @@ const Body = styled.div`
   display: flex;
 `
 const Content = styled.div`
-  margin-top: 10px;
+  margin-top: 40px;
   margin-left: 430px;
   ${media.tablet`margin-left: 50px;`}
   ${media.tablet`margin-left: 10px;`}
@@ -27,8 +27,8 @@ class Subject extends React.Component {
  }
 
   componentDidUpdate() {
-    this.props.setPageKey(this.props.children[this.props.page.number].key)
-    this.setPage()
+    // this.props.setPageKey(this.props.children[this.props.page.number].key)
+    // this.setPage()
   }
 
   setPage() {

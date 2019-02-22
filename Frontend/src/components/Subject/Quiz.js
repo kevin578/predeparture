@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
-// import * as actions from "../../actions";
+import {checkAnswers} from "../../state/actions";
 import {camelize, formAnimation} from "../../functions";
 
 
@@ -143,5 +143,5 @@ Question.defaultProps = {
 
 export default connect(
   null,
-  actions
+  {checkAnswers}
 )(Question);

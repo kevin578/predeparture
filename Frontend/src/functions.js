@@ -1,7 +1,8 @@
 import { keyframes } from 'styled-components';
 import { store } from "../wrap-with-provider";
 import { navigate } from "gatsby";
-import { setPage } from "./state/actions/"
+import { setPage } from "./state/actions"
+
 export function camelize(str) {
   str = str[0]
   if (typeof str !== 'string') return

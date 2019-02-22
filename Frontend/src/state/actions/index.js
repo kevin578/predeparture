@@ -1,5 +1,6 @@
 export * from "./userActions";
 export * from "./contentActions";
+export * from "./buttonActions";
 
 export const setPage = pageNumber => {
     return {
