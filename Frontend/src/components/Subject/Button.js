@@ -44,26 +44,6 @@ class Button extends Component {
   //   return false;
   // };
 
-  // changeScore saves the new score to the database then animates it for the
-  // header
-
-  // changeScore = newScore => {
-  //   if (!this.checkIfCompleted()) {
-  //     axios.put("/api/setScore", {
-  //       score: newScore + this.props.score
-  //     });
-  //     const timer = () => {
-  //       const changeValue = newScore > 0 ? 1 : -1;
-
-  //       for (let i = 0; i < Math.abs(newScore); i++) {
-  //         setTimeout(() => {
-  //           this.props.changeScore(changeValue);
-  //         }, i * 70);
-  //       }
-  //     };
-  //     timer();
-  //   }
-  // };
 
   projectSubmissionFormComplete() {
     const { isProjectSubmissionPage } = this.props.projectSubmission;
@@ -78,6 +58,11 @@ class Button extends Component {
     // if (Object.keys(this.props.correct).length) {
     //   this.checkQuiz();
     // }
+
+    function itemContainsQuiz() {
+      console.log(this.props)
+    }
+
     // this.setState({
     //   checkboxMessage: this.props.remainingCheckboxes > 0
     // });
@@ -88,7 +73,7 @@ class Button extends Component {
     // ) {
     //   this.nextPage();
     // }
-    this.nextPage();
+    //this.nextPage();
   };
 
   nextPage = () => {

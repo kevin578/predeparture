@@ -7,6 +7,7 @@ import ReactHtmlParser, {
 import { Body, Header, Video, Text, Image } from '../components/Subject/SubjectStyles'
 import Checkbox from '../components/Subject/Checkbox'
 import Question from '../components/Subject/Quiz'
+import Button from '../components/Subject/Button';
 
 export default function renderContent(html) {
   let editorArray = ReactHtmlParser(html)
@@ -25,7 +26,7 @@ const editorTypes = (item, index) => {
     case 'text':
       return <Text key={key}>{item.props.children}</Text>
     case 'video':
-      return <Video key={key} src={item.props.src} />
+      return <Video key={key} src={item.props.children} />
     case 'question':
       return (
         <Question
@@ -37,7 +38,9 @@ const editorTypes = (item, index) => {
         </Question>
       )
     case 'image':
-      return <Image key={key} src={item.props.src} width = {item.props.width} />
+      return <Image key={key} src={item.props.children} width = {item.props.width} />
+    case 'button':
+        return <Button>{item.props.children}</Button>
     default:
       return
   }

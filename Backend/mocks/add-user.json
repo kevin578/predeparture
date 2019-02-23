@@ -1,0 +1,8 @@
+{
+  "body": "{\"userId\":\"12345\", \"role\": \"admin\", \"userEmail\": \"kevinbriggs1@gmail.com\"}",
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "USER-SUB-1234"
+      }
+    }
+  }

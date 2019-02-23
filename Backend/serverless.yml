@@ -1,4 +1,4 @@
-service: notes-app-api
+service: predeparture-app-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -64,3 +64,24 @@ functions:
       - http:
           path: updateContent
           method: put
+
+  addUser:
+    handler: userRoutes.addUser
+    events:
+      - http:
+          path: addUser
+          method: put
+
+  getUser:
+    handler: userRoutes.getUser
+    events:
+      - http:
+          path: getUser
+          method: get
+
+  getAllUsers: 
+    handler: userRoutes.getAllUsers
+    events:
+      - http:
+          path: getAllUsers
+          method: get
