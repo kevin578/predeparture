@@ -5,12 +5,13 @@ import { success, failure } from "./libs/response-lib";
 
 export async function addUser(event) {
     const data = JSON.parse(event.body);
-
+    console.log(data)
     const params = {
         TableName: "predeparture-users",
         Item: {
-          userId: data.userId,
-          userEmail: data.userEmail,
+          id: data.id,
+          email: data.email,
+          givenName: data.givenName,
           createdAt: Date.now(),
           role: data.role
         }

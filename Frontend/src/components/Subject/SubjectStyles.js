@@ -75,6 +75,12 @@ export const Header = styled.h1`
 
 export const Text = styled.p``;
 
+export const Link = props => {
+  return  <a href = {props.to} target = "_blank">{props.content}</a>
+}
+ 
+
+
 export const Body = props => {
   return <Wrapper>{props.children}</Wrapper>;
 };

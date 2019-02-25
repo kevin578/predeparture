@@ -1,5 +1,5 @@
 {
-  "body": "{\"userId\":\"12345\", \"role\": \"admin\", \"userEmail\": \"kevinbriggs1@gmail.com\"}",
+  "body": "{\"id\":\"12345\", \"role\": \"admin\", \"email\": \"kevinbriggs1@gmail.com\", \"givenName\": \"Kevin Briggs\"}",
     "requestContext": {
       "identity": {
         "cognitoIdentityId": "USER-SUB-1234"

@@ -4,7 +4,7 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2,
 } from 'react-html-parser'
-import { Body, Header, Video, Text, Image } from '../components/Subject/SubjectStyles'
+import { Body, Header, Video, Text, Image, Link } from '../components/Subject/SubjectStyles'
 import Checkbox from '../components/Subject/Checkbox'
 import Question from '../components/Subject/Quiz'
 import Button from '../components/Subject/Button';
@@ -17,6 +17,7 @@ export default function renderContent(html) {
 }
 
 const editorTypes = (item, index) => {
+  if (item == null) return;
   const key = `${item.type}${index}`
   switch (item.type) {
     case 'header':
@@ -40,7 +41,9 @@ const editorTypes = (item, index) => {
     case 'image':
       return <Image key={key} src={item.props.children} width = {item.props.width} />
     case 'button':
-        return <Button>{item.props.children}</Button>
+        return <Button key = {key}>{item.props.children}</Button>
+    case 'link':
+        return <Link key = {key} to = {item.props.to}>{item.props.children}</Link>
     default:
       return
   }

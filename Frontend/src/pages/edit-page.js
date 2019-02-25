@@ -48,8 +48,6 @@ const TitleInput = styled.input`
   }
 `
 
-const Editor = styled(AceEditor)``
-
 const EditorContainer = styled.div`
   height: 200px;
   grid-column-start: 2;
@@ -152,7 +150,7 @@ class editPage extends React.Component {
       isSaving: false,
       warning: '',
       showDeleteModal: false,
-      href: window.location.href,
+      href: ()=>  typeof window !== `undefined` ? window.location.href : ""
     }
   }
 
@@ -194,17 +192,17 @@ class editPage extends React.Component {
 
   onChange = event => {
     const { name, value } = event.target
-    window.onbeforeunload = () => ''
+    if (typeof window !== `undefined`) window.onbeforeunload = () => ''
     this.setState({ [name]: value })
   }
 
   onEditorChange = newValue => {
-    window.onbeforeunload = () => ''
+    if (typeof window !== `undefined`) window.onbeforeunload = () => ''
     this.setState({ editorContent: newValue })
   }
 
   newPage = () => {
-    window.onbeforeunload = () => ''
+    if (typeof window !== `undefined`) window.onbeforeunload = () => ''
     const newItem = {
       title: 'New Item',
       key: short.generate(),
@@ -217,7 +215,7 @@ class editPage extends React.Component {
   }
 
   deleteItem = () => {
-    window.onbeforeunload = () => ''
+    if (typeof window !== `undefined`) window.onbeforeunload = () => ''
     const  { contentArray } = this.props.content;
     const {page, setContent, setPage} = this.props;
     const newContent = contentArray.filter((item, index)=> {
@@ -257,7 +255,7 @@ class editPage extends React.Component {
       console.log(e)
     }
     this.setState({ isSaving: false })
-    window.onbeforeunload = null
+    if (typeof window !== `undefined`) window.onbeforeunload = null
   }
 
   getButton = () => {
@@ -290,7 +288,7 @@ class editPage extends React.Component {
               onChange={this.onChange}
               name="title"
             />
-            <Editor
+            <AceEditor
               mode="html"
               theme="solarized_light"
               onChange={this.onEditorChange}

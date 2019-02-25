@@ -27,11 +27,12 @@ const Wrapper = styled.nav`
   display: flex;
   justify-content: space-between;
 `
-const Title = styled.h1`
+const Title = styled(Link)`
   color: #fff;
   line-height: 60px;
   font-size: 30px;
   margin-left: 60px;
+  text-decoration: none;
 `
 
 const Links = styled.div`
@@ -91,13 +92,13 @@ class SiteHeader extends Component {
     const { user } = this.props;
     return (
       <Wrapper>
-        <Title>PreDeparture CheckIn</Title>
+        <Title to = "/">PreDeparture CheckIn</Title>
           {
             user.isLoggedIn && (
             <Links>
             <HeaderLink to = "/edit-page/">Editor</HeaderLink>
             <HeaderLink to = "/student-list/">Students</HeaderLink>
-            <HeaderItem>Docs</HeaderItem>
+            <HeaderLink to = "/guide/">Guide</HeaderLink>
             <HeaderItem onClick = {this.logout}>Logout</HeaderItem>
             </Links>
             )

@@ -24,7 +24,6 @@ const IndexPage = (props) => {
       )
     })
   }
-  console.log(getContent())
   //renderContent(props.content.contentArray[props.page.number]
   return (
     <React.Fragment>
