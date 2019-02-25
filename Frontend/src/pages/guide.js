@@ -57,7 +57,7 @@ export default class GuideEditor extends Component {
       <Page>
         <SiteHeader />
         <EditorContainer>
-          <AceEditor
+          { typeof window !== 'undefined' && <AceEditor
             mode="html"
             theme="solarized_light"
             onChange={this.onEditorChange}
@@ -76,7 +76,7 @@ export default class GuideEditor extends Component {
               top: 90,
               left: 40,
             }}
-          />
+          /> }
         </EditorContainer>
         <ContentContainer>
           <Content>{renderContent(this.state.editorContent)}</Content>

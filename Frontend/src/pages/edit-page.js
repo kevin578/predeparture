@@ -288,7 +288,7 @@ class editPage extends React.Component {
               onChange={this.onChange}
               name="title"
             />
-            <AceEditor
+            {typeof window !== 'undefined' && <AceEditor
               mode="html"
               theme="solarized_light"
               onChange={this.onEditorChange}
@@ -303,7 +303,7 @@ class editPage extends React.Component {
               setOptions = {{
               indentedSoftWrap: false
               }}
-            />
+            />}
           </EditorContainer>
           <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
           <DeletePageButton onClick={()=> this.setState({showDeleteModal: true})}>
