@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
-import {checkAnswers} from "../../state/actions";
+import {addToRemainingQuestions, removeFromRemaingQuestions} from "../../state/actions";
 import {camelize, formAnimation} from "../../functions";
+
 
 
 
@@ -36,8 +37,8 @@ const MultipleChoiceLabel = styled.label`
   cursor: pointer;
 
   &:before {
-    font-family: Material-Design-Iconic-Font;
-    content: "\f26c";
+    /* font-family: Material-Design-Iconic-Font;
+    content: "\f26c"; */
     margin-right: 5px;
     text-transform: none;
     position: relative;
@@ -47,46 +48,64 @@ const MultipleChoiceLabel = styled.label`
   }
 `;
 
-const HiddenCheckbox = styled.input`
-  display: none;
-  &:checked + ${MultipleChoiceLabel} {
-    &:before {
-      display: inline-block;
-      content: "\f26f";
-      animation: ${formAnimation} 0.3s;
-      color: #4c6eff;
-    }
-  }
+const RadioButton = styled.input`
+  margin-left: 10px;
 `;
+
+function parseChoiceString(str) {
+  const splitString = str.split(',')
+  return splitString.map((item, index)=> {
+    if (index == 0) {
+      return item
+    }
+    else {
+      return item.slice(1,item.length);
+    }
+  })
+}
 
 class Question extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: ""
+      value: "",
+      prevState: "incorrect"
     };
   }
 
   componentDidMount() {
-    this.props.checkAnswers(null, camelize(this.props.correctAnswer));
+    this.props.addToRemainingQuestions();
+  }
+
+  componentWillUnmount() {
+    if (this.state.prevState == "correct") {
+      this.props.removeFromRemaingQuestions();
+    }
   }
 
   handleChange = event => {
     this.setState({ value: event.target.value });
+
     if (event.target.value == this.props.correctAnswer) {
-      this.props.checkAnswers("matched", camelize(this.props.correctAnswer));
+      if (this.state.prevState == "correct") return;
+      this.props.removeFromRemaingQuestions();
+      this.setState({prevState: "correct"});
     } else {
-      this.props.checkAnswers(null, camelize(this.props.correctAnswer));
+      if (this.state.prevState == "incorrect") return;
+      this.props.addToRemainingQuestions();
+      this.setState({prevState: "incorrect"});
     }
   };
 
   getMultipleChoices = () => {
+    const choices = parseChoiceString(this.props.choices);
     return (
       <MultipleChoiceConainter>
-        {this.props.choices.map(choice => {
+        
+        {choices.map(choice => {
           return (
             <div key={choice}>
-              <HiddenCheckbox
+              <RadioButton
                 id={camelize(choice + this.props.children)}
                 type="radio"
                 name={camelize(this.props.children)}
@@ -143,5 +162,5 @@ Question.defaultProps = {
 
 export default connect(
   null,
-  {checkAnswers}
+  {addToRemainingQuestions, removeFromRemaingQuestions}
 )(Question);

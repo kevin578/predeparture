@@ -65,7 +65,7 @@ export default class GuideEditor extends Component {
             name="editor"
             editorProps={{ $blockScrolling: true }}
             width="500px"
-            height="1000px"
+            height="1200px"
             fontSize={14}
             showGutter={false}
             wrapEnabled={true}

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'gatsby'
+import React, {useEffect} from 'react'
+import { Link, navigate } from 'gatsby'
 import Layout from '../components/layout'
 import {connect} from "react-redux";
 import SiteHeader from '../components/siteHeader'
@@ -14,9 +14,10 @@ import renderContent from "../lib/renderContent";
 
 
 const IndexPage = (props) => {
-  const getContent = ()=> {
-
+  
+  const getContent = ()=> {  
   return props.content.contentArray.map((item)=> {
+    if(props.user.isLoggedIn === false) navigate("/login/")
       return (
         <Body key = {item.key} title = {item.title}>
         { renderContent(item.content) }
@@ -30,7 +31,7 @@ const IndexPage = (props) => {
     <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
     <SiteHeader />
     <Subject
-      title="Sample Page"
+      title="Tasks"
       urlName="sampleURL"
       queryParams={props.location.search}
     >
@@ -43,7 +44,8 @@ const IndexPage = (props) => {
 function mapStateToProps(state) {
   return {
     content: state.content,
-    page: state.page
+    page: state.page,
+    user: state.user
   }
 
 }

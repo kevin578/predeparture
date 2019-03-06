@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import Amplify, { Auth } from 'aws-amplify'
 import Modal from 'react-modal'
 import SiteHeader from '../components/siteHeader'
+import NewUserModal from '../components/newUserModal'
 
 const UserTable = styled.table`
   width: 800px;
@@ -20,8 +21,6 @@ const Container = styled.div`
   padding: 50px;
 `
 
-
-
 export default class StudentList extends Component {
   state = {
     users: [],
@@ -32,7 +31,7 @@ export default class StudentList extends Component {
   }
 
   componentDidMount() {
-    this.loadUsers();
+    this.loadUsers()
   }
 
   loadUsers = async () => {
@@ -55,7 +54,7 @@ export default class StudentList extends Component {
   }
 
   handleChange = event => {
-    console.log(event);
+    console.log(event)
   }
 
   showModal = () => {
@@ -84,6 +83,10 @@ export default class StudentList extends Component {
           >
             Add User
           </AddUserButton>
+          <NewUserModal
+            isOpen={this.state.showModal}
+            closeModal={() => this.setState({ showModal: false })}
+          />
         </Container>
       </React.Fragment>
     )

@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link, navigate } from 'gatsby'
 import ReactDOMServer from 'react-dom/server'
 import styled from 'styled-components'
 import brace from 'brace'
@@ -156,6 +157,7 @@ class editPage extends React.Component {
 
   componentDidMount() {
     this.loadContent()
+    if(this.props.user.isLoggedIn === false) navigate("/login/");
   }
 
   componentDidUpdate(prevProps) {
@@ -333,6 +335,7 @@ function mapStateToProps(state) {
   return {
     content: state.content,
     page: state.page,
+    user: state.user
   }
 }
 

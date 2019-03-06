@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import { withRouter } from "react-router";
-import {setPage} from "../../state/actions";
-import { navigate } from "gatsby";
-import { connect } from "react-redux";
+import React, { Component } from 'react'
+import styled from 'styled-components'
+import { withRouter } from 'react-router'
+import { setPage } from '../../state/actions'
+import { navigate } from 'gatsby'
+import { connect } from 'react-redux'
+import { updatePageNumber } from '../../functions'
 
 export const Wrapper = styled.button`
   border: 4px solid #4c6eff;
@@ -16,23 +17,22 @@ export const Wrapper = styled.button`
   width: 100px;
   height: 40px;
   margin-top: 50px;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   cursor: pointer;
-`;
+`
 
 class Button extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       numberWrong: 0,
       checkboxMessage: false,
       isValidProjectURL: null,
       isValidProjectTitle: null,
-      buttonText: "",
-      allTestsPassed: true
-    };
+      buttonText: '',
+      allTestsPassed: true,
+    }
   }
-
 
   // checkIfCompleted = () => {
   //   if (this.props.completed == null) return false;
@@ -44,93 +44,50 @@ class Button extends Component {
   //   return false;
   // };
 
+  checkForNextPage = () => {
+    const displayCheckboxError = () => {
+      this.setState({
+        checkboxMessage: this.props.page.remainingCheckboxes > 0,
+      })
+    }
 
-  projectSubmissionFormComplete() {
-    const { isProjectSubmissionPage } = this.props.projectSubmission;
-    if (!this.state.isValidProjectURL && isProjectSubmissionPage) return false;
-    if (!this.state.isValidProjectTitle && isProjectSubmissionPage)
-      return false;
-    return true;
+    const displayQuestionError = () => {
+      console.log()
+      this.setState({ numberWrong: this.props.page.remainingQuestions })
+    }
+
+    displayCheckboxError()
+    displayQuestionError()
+
+    if (
+      this.props.page.remainingQuestions === 0 &&
+      this.props.page.remainingCheckboxes === 0
+    ) {
+      this.nextPage()
+    }
   }
 
-  checkForNextPage = () => {
-
-    // if (Object.keys(this.props.correct).length) {
-    //   this.checkQuiz();
-    // }
-
-    function itemContainsQuiz() {
-      console.log(this.props)
-    }
-
-    // this.setState({
-    //   checkboxMessage: this.props.remainingCheckboxes > 0
-    // });
-    // if (
-    //   this.checkQuiz() === 0 &&
-    //   this.props.remainingCheckboxes === 0 &&
-    //   (this.props.testsCompleted === true || this.props.testsCompleted === null)
-    // ) {
-    //   this.nextPage();
-    // }
-    //this.nextPage();
-  };
-
   nextPage = () => {
-    // if (this.props.auth) this.changeScore(this.props.changeScoreValue);
-    // this.props.completeButton(this.props.pageKey, this.props.subjectURL);
-    // if (this.props.badge) {
-    //   this.props.addAchievement(this.props.badge, this.props.subject);
-    // }
-    
-    if (parseInt(this.props.page.number, 10) + 1 == this.props.page.length) {
-      navigate("/");
-      this.props.setPage(0);
+    if (
+      parseInt(this.props.page.number, 10) + 1 ==
+      this.props.content.contentArray
+    ) {
+      navigate('/')
+      this.props.setPage(0)
     } else {
-      window.location = `/?pageNumber=${parseInt(
-        this.props.page.number
-      ) + 1}`;
-      //this.props.history.push(`${this.props.subjectURL}?pageNumber=${parseInt(this.props.page, 10) + 1}`);
+      const newPageNumber = parseInt(this.props.page.number) + 1
+      console.log(newPageNumber)
+      updatePageNumber(newPageNumber)
     }
-    window.scrollTo(0, 0);
-    this.props.resetAnswers();
-  };
-
-  checkQuiz = () => {
-    let matchArray = [];
-    for (let item in this.props.correct) {
-      if (this.props.correct[item] == null) {
-        matchArray.push(item);
-      }
-    }
-    this.setState({ numberWrong: matchArray.length });
-    return matchArray.length;
-  };
-
-  // validateURL() {
-  //   if (this.state.isValidProjectURL) return;
-  //   else if (this.props.projectSubmission.projectURL.length < 8) {
-  //     this.setState({ isValidProjectURL: false });
-  //   } else {
-  //     this.setState({ isValidProjectURL: true }, this.checkForNextPage);
-  //   }
-  // }
-
-  // validateTitle() {
-  //   if (this.state.isValidProjectTitle) return;
-  //   else if (this.props.projectSubmission.projectTitle) {
-  //     this.setState({ isValidProjectTitle: true }, this.checkForNextPage);
-  //   } else {
-  //     this.setState({ isValidProjectTitle: false });
-  //   }
-  // }
+    //this.props.resetAnswers();
+  }
 
   render() {
     return (
       <div>
         <Wrapper
           onClick={() => {
-            this.checkForNextPage();
+            this.checkForNextPage()
           }}
         >
           {this.props.children}
@@ -141,34 +98,26 @@ class Button extends Component {
         {this.state.checkboxMessage && (
           <p>You have not completed all the requirements.</p>
         )}
-        {this.state.isValidProjectURL === false &&
-          this.props.projectSubmission.isProjectSubmissionPage && (
-            <p>Please enter a valid URL.</p>
-          )}
-        {this.state.isValidProjectTitle === false &&
-          this.props.projectSubmission.isProjectSubmissionPage && (
-            <p>Your project does not have a title.</p>
-          )}
       </div>
-    );
+    )
   }
 }
 
 Button.defaultProps = {
   changeScoreValue: 5,
-  testButtonText: "Test",
-  children: "Next",
-  type: "default"
-};
+  testButtonText: 'Test',
+  children: 'Next',
+  type: 'default',
+}
 
 function mapStateToProps(state) {
   return {
     page: state.page,
-  };
+    content: state.content,
+  }
 }
 
-export default 
-  connect(
-    mapStateToProps,
-    {setPage}
-  )(Button);
+export default connect(
+  mapStateToProps,
+  { setPage }
+)(Button)

@@ -2,7 +2,8 @@ const defaultPageState = {
     number: 0,
     subject: "Departure Checklist",
     length: 0,
-    remainingCheckboxes: 0
+    remainingCheckboxes: 0,
+    remainingQuestions: 0
 }
 
 export default function pageReducer(state = defaultPageState, action) {
@@ -17,6 +18,10 @@ export default function pageReducer(state = defaultPageState, action) {
         return {...state, remainingCheckboxes: state.remainingCheckboxes - 1}
     case "RESET_CHECKBOXES":
         return {...state, remainingCheckboxes: 0}
+    case "ADD_TO_REMAINING_QUESTIONS":
+        return {...state, remainingQuestions: state.remainingQuestions + 1}
+    case "REMOVE_FROM_REMAINING_QUESTIONS":
+        return {...state, remainingQuestions: state.remainingQuestions - 1}
     default:
         return state;
     }

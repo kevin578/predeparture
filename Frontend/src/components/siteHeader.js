@@ -64,6 +64,7 @@ class SiteHeader extends Component {
     this.getAuthState();
     this.getContent();
     this.setPageNumber();
+
   }
 
   getAuthState = async ()=> {
@@ -77,7 +78,8 @@ class SiteHeader extends Component {
   }
 
   setPageNumber = ()=> {
-    const  { pageNumber } = queryString.parse(window.location.search);
+    let  { pageNumber } = queryString.parse(window.location.search);
+    if (pageNumber == undefined) pageNumber = 0;
     this.props.setPage(pageNumber);
 
   }

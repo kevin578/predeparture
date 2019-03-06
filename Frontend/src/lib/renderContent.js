@@ -9,6 +9,9 @@ import Checkbox from '../components/Subject/Checkbox'
 import Question from '../components/Subject/Quiz'
 import Button from '../components/Subject/Button';
 
+
+
+
 export default function renderContent(html) {
   let editorArray = ReactHtmlParser(html)
   return editorArray.map((item, index) => {
@@ -32,8 +35,8 @@ const editorTypes = (item, index) => {
       return (
         <Question
           key={key}
-          correctAnswer={item.props.correctAnswer}
-          choices={item.props.correctAnswer}
+          correctAnswer={item.props.correctanswer}
+          choices={item.props.choices}
         >
           {item.props.children}
         </Question>
