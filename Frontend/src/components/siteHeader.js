@@ -70,8 +70,8 @@ class SiteHeader extends Component {
       'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
       { params: { id: user.username } }
     )
-    const { email, givenName, id, progress} = userInfo.data.Item;
-    userInfo = {email, givenName, id, progress}
+    const { email, givenName, id, progress, role} = userInfo.data.Item;
+    userInfo = {email, givenName, id, progress, role}
     this.props.setUserInfo(userInfo)
     this.props.editProgress(progress)
     this.props.setLoginState(true)

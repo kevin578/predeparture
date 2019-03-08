@@ -37,10 +37,12 @@ class Button extends Component {
 
   handleEditProgress = ()=> {
     const itemKey = this.props.content.contentArray[this.props.page.number].key;
-    let {progress} = this.props.user;
+    let {progress, role} = this.props.user;
     progress.push(itemKey);
     this.props.editProgress(progress);
-    axios.put("https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/editProgress", {progress});
+    if (role == "student") {
+      axios.put("https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/editProgress", {progress});
+    }
   }
 
   checkForNextPage = () => {
