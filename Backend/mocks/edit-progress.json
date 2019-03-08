@@ -1,5 +1,5 @@
 {
-    "body": "{\"id\": \"1a937de0-85eb-403d-a98d-9c80149d7f02\"}",
+    "body": "{\"progress\": [\"thing1\", \"thing 2\"]}",
       "requestContext": {
         "identity": {
           "cognitoIdentityId": "USER-SUB-1234"

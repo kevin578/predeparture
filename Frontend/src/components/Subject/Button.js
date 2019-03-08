@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import axios from 'axios'
 import { withRouter } from 'react-router'
-import { setPage } from '../../state/actions'
+import { setPage, editProgress } from '../../state/actions'
 import { navigate } from 'gatsby'
 import { connect } from 'react-redux'
 import { updatePageNumber } from '../../functions'
@@ -34,15 +35,13 @@ class Button extends Component {
     }
   }
 
-  // checkIfCompleted = () => {
-  //   if (this.props.completed == null) return false;
-  //   if (!(this.props.subjectURL in this.props.completed)) return false;
-  //   if (
-  //     this.props.completed[this.props.subjectURL].includes(this.props.pageKey)
-  //   )
-  //     return true;
-  //   return false;
-  // };
+  handleEditProgress = ()=> {
+    const itemKey = this.props.content.contentArray[this.props.page.number].key;
+    let {progress} = this.props.user;
+    progress.push(itemKey);
+    this.props.editProgress(progress);
+    axios.put("https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/editProgress", {progress});
+  }
 
   checkForNextPage = () => {
     const displayCheckboxError = () => {
@@ -67,7 +66,9 @@ class Button extends Component {
     }
   }
 
+
   nextPage = () => {
+    this.handleEditProgress();
     if (
       parseInt(this.props.page.number, 10) + 1 ==
       this.props.content.contentArray
@@ -79,7 +80,6 @@ class Button extends Component {
       console.log(newPageNumber)
       updatePageNumber(newPageNumber)
     }
-    //this.props.resetAnswers();
   }
 
   render() {
@@ -114,10 +114,11 @@ function mapStateToProps(state) {
   return {
     page: state.page,
     content: state.content,
+    user: state.user
   }
 }
 
 export default connect(
   mapStateToProps,
-  { setPage }
+  { setPage, editProgress }
 )(Button)

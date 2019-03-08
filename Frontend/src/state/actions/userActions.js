@@ -3,3 +3,14 @@ export const setLoginState = status => ({
     payload: status
 }); 
 
+export const editProgress = progress => ({
+    type: "EDIT_PROGRESS",
+    payload: progress
+})
+
+export const setUserInfo = userInfo => ({
+    type: "SET_USER_INFO",
+    payload: userInfo
+})
+
+

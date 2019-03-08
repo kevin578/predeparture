@@ -52,6 +52,7 @@ class Subject extends React.Component {
           <Content
             key={this.props.page.subject + this.props.page.number}
             title= "Predeparture"
+            
           >
             {this.props.children[this.props.page.number]}
           </Content>

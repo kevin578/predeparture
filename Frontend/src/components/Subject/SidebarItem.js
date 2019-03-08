@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   height: 50px;
   border-bottom: 2px solid ${props => (props.completed ? '#D8D8D8' : '#979797')};
   cursor: pointer;
-  background: ${props => props.color};
+  background: ${props => props.backgroundColor};
   color: ${props => (props.completed ? '#fff' : 'default')};
   transition: 0.5s all;
   display: flex;
@@ -37,15 +37,26 @@ class SidebarItem extends React.Component {
     updatePageNumber(this.props.index)
   }
 
+  checkIfCompleted = () => {
+    const itemKey = this.props.content.contentArray[this.props.index].key;
+    let {progress} = this.props.user;
+    if (progress.includes(itemKey)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  };
+
   getColor = () => {
     const currentlySelected = this.props.index == this.props.page.number
-    const { completed } = this.props
+    const completed = this.checkIfCompleted();
     if (currentlySelected && !completed) {
-      return '#f7f7f7'
-    } else if (currentlySelected) {
-      return '#88c47d'
+      return '#f7f7f7' //light grey
+    } else if (currentlySelected && completed) {
+      return '#88c47d' //light green
     } else if (completed) {
-      return '#5BA84C'
+      return '#5BA84C' //dark green
     } else {
       return 'transparent'
     }
@@ -55,8 +66,8 @@ class SidebarItem extends React.Component {
     return (
       <Wrapper
         onClick={this.click}
-        completed={this.props.completed}
-        color={() => this.getColor()}
+        completed={this.checkIfCompleted()}
+        backgroundColor={() => this.getColor()}
       >
         <ItemName>{this.props.children}</ItemName>
       </Wrapper>
@@ -67,6 +78,8 @@ class SidebarItem extends React.Component {
 function mapStateToProps(state) {
   return {
     page: state.page,
+    user: state.user,
+    content: state.content
   }
 }
 

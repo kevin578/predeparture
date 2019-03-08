@@ -177,7 +177,7 @@ class editPage extends React.Component {
 
   loadContent = async () => {
     const content = await axios.get(
-      'https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent'
+      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getContent'
     )
     this.props.setContent(content.data)
     this.setContent()
@@ -248,7 +248,7 @@ class editPage extends React.Component {
     setContent(newContent)
     try {
       const response = await axios.put(
-        'https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/updateContent',
+        'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/updateContent',
         {
           contentArray: newContent,
         }

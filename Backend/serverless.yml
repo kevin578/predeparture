@@ -33,30 +33,13 @@ provider:
       Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 functions:
-  create:
-    handler: addUser.main
-    events:
-      - http:
-          path: users
-          method: post
-          cors: true
-          authorizer: aws_iam
-  get:
-    handler: getUser.main
-    events:
-      - http:
-          path: users/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-
-    
   getContent:       
     handler: contentRoutes.getContent
     events:
       - http:
           path: getContent
           method: get
+          cors: true
     
   updateContent:       
     handler: contentRoutes.updateContent
@@ -64,6 +47,7 @@ functions:
       - http:
           path: updateContent
           method: put
+          cors: true
 
   addUser:
     handler: userRoutes.addUser
@@ -71,13 +55,15 @@ functions:
       - http:
           path: addUser
           method: put
+          cors: true
 
-  getUser:
-    handler: userRoutes.getUser
+  getUserById:
+    handler: userRoutes.getUserById
     events:
       - http:
-          path: getUser
+          path: getUserById
           method: get
+          cors: true
 
   getAllUsers: 
     handler: userRoutes.getAllUsers
@@ -85,3 +71,12 @@ functions:
       - http:
           path: getAllUsers
           method: get
+          cors: true
+
+  editProgress: 
+    handler: userRoutes.editProgress
+    events:
+      - http:
+          path: editProgress
+          method: put
+          cors: true

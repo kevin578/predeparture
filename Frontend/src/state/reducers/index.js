@@ -7,5 +7,5 @@ import buttonReducer from "./buttonReducer";
 export default combineReducers({
     user: userReducer,
     page: pageReducer,
-    content: contentReducer,
+    content: contentReducer
 })

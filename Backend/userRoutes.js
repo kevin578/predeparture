@@ -5,7 +5,6 @@ import { success, failure } from "./libs/response-lib";
 
 export async function addUser(event) {
     const data = JSON.parse(event.body);
-    console.log(data)
     const params = {
         TableName: "predeparture-users",
         Item: {
@@ -25,14 +24,11 @@ export async function addUser(event) {
       }
 }
 
-export async function getUser() {
-    //const data = JSON.parse(event.body);
-
+export async function getUserById(event) {
     const params = {
         TableName: "predeparture-users",
         Key: {
-            userId: "12345",
-            userEmail: "kevinbriggs1@gmail.com"
+            id: event.queryStringParameters.id
         }
       };
     
@@ -55,4 +51,29 @@ export async function getAllUsers() {
       } catch (e) {
         console.log(e)
       }
+}
+
+export async function editProgress(event) {
+  const data = JSON.parse(event.body);
+  const params = {
+    TableName: 'predeparture-users',
+    Key: {
+      id: '12345'
+    },
+    ExpressionAttributeValues: {
+      ":progress": data.progress || null
+    },
+    ExpressionAttributeNames: {
+        '#progress': "progress",
+   },
+    UpdateExpression: "SET #progress = :progress",
+    ReturnValues: "ALL_NEW"
+  }
+
+  try {
+    const result = await dynamoDbLib.call("update", params);
+    return success(result);
+  } catch (e) {
+    console.log(e)
+  }
 }

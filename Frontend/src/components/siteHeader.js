@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
-import styled from 'styled-components';
-import axios from "axios";
-import { Link, navigate } from "gatsby";
+import styled from 'styled-components'
+import axios from 'axios'
+import { Link, navigate } from 'gatsby'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import Amplify, { Auth } from "aws-amplify";
-import { setLoginState, setContent, setPage } from "../state/actions";
-import queryString from "query-string";
+import Amplify, { Auth } from 'aws-amplify'
+import { setLoginState, setContent, setPage, setUserInfo, editProgress } from '../state/actions'
+import queryString from 'query-string'
 
 Amplify.configure({
   Auth: {
@@ -57,62 +57,68 @@ const HeaderLink = styled(Link)`
   color: #fff;
 `
 
-
 class SiteHeader extends Component {
-
   componentDidMount() {
-    this.getAuthState();
-    this.getContent();
-    this.setPageNumber();
-
+    this.getAuthState()
+    this.getContent()
+    this.setPageNumber()
   }
 
-  getAuthState = async ()=> {
-    await Auth.currentAuthenticatedUser();
-    this.props.setLoginState(true);
+  getAuthState = async () => {
+    const user = await Auth.currentAuthenticatedUser()
+    let userInfo = await axios.get(
+      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
+      { params: { id: user.username } }
+    )
+    const { email, givenName, id, progress} = userInfo.data.Item;
+    userInfo = {email, givenName, id, progress}
+    this.props.setUserInfo(userInfo)
+    this.props.editProgress(progress)
+    this.props.setLoginState(true)
   }
 
-  getContent = async ()=> {
-    const content = await axios.get("https://s2t7hro01h.execute-api.us-east-1.amazonaws.com/dev/getContent");
-    this.props.setContent(content.data); 
+  getContent = async () => {
+    const content = await axios.get(
+      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getContent'
+    )
+    this.props.setContent(content.data)
   }
 
-  setPageNumber = ()=> {
-    let  { pageNumber } = queryString.parse(window.location.search);
-    if (pageNumber == undefined) pageNumber = 0;
-    this.props.setPage(pageNumber);
-
+  setPageNumber = () => {
+    let { pageNumber } = queryString.parse(window.location.search)
+    if (pageNumber == undefined) pageNumber = 0
+    this.props.setPage(pageNumber)
   }
-  logout = async ()=> {
-    await Auth.signOut();
-    this.props.setLoginState(false);
-    navigate("/login/");
-
+  logout = async () => {
+    await Auth.signOut()
+    this.props.setLoginState(false)
+    navigate('/login/')
   }
 
   render() {
-    const { user } = this.props;
+    const { user } = this.props
     return (
       <Wrapper>
-        <Title to = "/">PreDeparture CheckIn</Title>
-          {
-            user.isLoggedIn && (
-            <Links>
-            <HeaderLink to = "/edit-page/">Editor</HeaderLink>
-            <HeaderLink to = "/student-list/">Students</HeaderLink>
-            <HeaderLink to = "/guide/">Guide</HeaderLink>
-            <HeaderItem onClick = {this.logout}>Logout</HeaderItem>
-            </Links>
-            )
-          }
+        <Title to="/">PreDeparture CheckIn</Title>
+        {user.isLoggedIn && (
+          <Links>
+            <HeaderLink to="/edit-page/">Editor</HeaderLink>
+            <HeaderLink to="/student-list/">Students</HeaderLink>
+            <HeaderLink to="/guide/">Guide</HeaderLink>
+            <HeaderItem onClick={this.logout}>Logout</HeaderItem>
+          </Links>
+        )}
       </Wrapper>
     )
   }
 }
 
-const mapStateToProps = (state)=> ({
+const mapStateToProps = state => ({
   user: state.user,
-  content: state.content
-}) 
+  content: state.content,
+})
 
-export default connect(mapStateToProps, {setLoginState, setContent, setPage })(SiteHeader)
+export default connect(
+  mapStateToProps,
+  { setLoginState, setContent, setPage, setUserInfo, editProgress }
+)(SiteHeader)

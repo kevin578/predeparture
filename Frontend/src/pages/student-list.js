@@ -36,7 +36,7 @@ export default class StudentList extends Component {
 
   loadUsers = async () => {
     const users = await axios.get(
-      'https://dk1si4n6ka.execute-api.us-east-1.amazonaws.com/dev/getAllUsers'
+      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getAllUsers'
     )
     this.setState({ users: users.data.Items })
   }
