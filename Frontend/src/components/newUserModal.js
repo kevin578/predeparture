@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import {navigate} from 'gatsby'
 import styled from 'styled-components'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -12,10 +13,10 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
 const modalStyles = {
   content: {
     width: 380,
-    height: 430,
+    height: 530,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 50,
+    marginTop: 40,
     padding: 25,
   },
   overlay: {
@@ -29,53 +30,63 @@ const styles = {
     marginBottom: 25,
   },
   button: {
-    display: "block",
-    marginTop: 40
-  }
+    display: 'block',
+    marginTop: 40,
+  },
 }
 
 export default class NewUserModal extends Component {
   state = {
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    role: 'student',
+    password: '',
   }
 
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
-    });
-  };
-  handleSubmit = ()=> {
-    const {name, email, role} = this.state;
-    this.signUp(name, email, role)
-    
-    const resetModal = ()=> {
-      this.setState({
-        name: "",
-        email: "",
-        role: "student"
-      });
-      this.props.closeModal();
-    }
-
-    resetModal();
-
+    })
   }
 
-
-  signUp(name, email, role) {
-
+  signUp = () => {
+    const { email, password, firstName, lastName } = this.state
     Auth.signUp({
       username: email,
-      password: "clarkies123",
+      password: password,
       attributes: {
-          email
+        email,
       },
-      validationData: []  //optional
+    })
+      .then(data => {
+        axios.put(
+          'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/addUser',
+          {
+            id: data.userSub,
+            email,
+            firstName,
+            lastName,
+            createdAt: Date.now(),
+            role: 'student',
+          }
+        )
       })
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .then(()=> Auth.signIn(this.state.email, this.state.password))
+      .then(() => {
+        navigate('/');
+        const resetModal = () => {
+          this.setState({
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+          })
+          this.props.closeModal()
+
+        }
+        resetModal()
+      })
   }
 
   render() {
@@ -83,41 +94,57 @@ export default class NewUserModal extends Component {
       <div>
         <Modal
           isOpen={this.props.isOpen}
-          contentLabel="Add User"
+          contentLabel="Sign Up"
           ariaHideApp={false}
           onRequestClose={this.props.closeModal}
           style={modalStyles}
         >
-          <h4>Add a new user</h4>
+          <h4>Sign Up</h4>
           <TextField
-            label="Name"
-            value={this.state.name}
-            onChange={this.handleChange('name')}
-            variant="outlined"
-            style={styles.textField}
-          />
-          <TextField
-            label="email"
+            label="Email address"
             value={this.state.email}
             onChange={this.handleChange('email')}
             variant="outlined"
             style={styles.textField}
           />
-          <Select
+          <TextField
+            type="password"
+            label="Password"
+            value={this.state.password}
+            onChange={this.handleChange('password')}
+            variant="outlined"
+            style={styles.textField}
+          />
+          <TextField
+            label="First Name"
+            value={this.state.firstName}
+            onChange={this.handleChange('firstName')}
+            variant="outlined"
+            style={styles.textField}
+          />
+          <TextField
+            label="Last Name"
+            value={this.state.lastName}
+            onChange={this.handleChange('lastName')}
+            variant="outlined"
+            style={styles.textField}
+          />
+
+          {/* <Select
             native
             value={this.state.role}
             onChange={this.handleChange('role')}
           >
             <option value={'student'}>Student</option>
             <option value={'admin'}>Admin</option>
-          </Select>
+          </Select> */}
           <Button
             variant="contained"
             color="primary"
-            style = {styles.button}
-            onClick = {this.handleSubmit}
+            style={styles.button}
+            onClick={this.signUp}
           >
-            Add User
+            Sign up
           </Button>
         </Modal>
       </div>

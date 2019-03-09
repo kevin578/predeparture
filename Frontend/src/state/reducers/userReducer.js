@@ -3,7 +3,8 @@ const defaultUserState = {
   id: '',
   email: '',
   role: '',
-  givenName: '',
+  firstName: '',
+  lastName: '',
   progress: [],
 }
 
@@ -12,13 +13,14 @@ export default function userReducer(state = defaultUserState, action) {
     case 'SET_LOGIN_STATE':
       return { ...state, isLoggedIn: action.payload }
     case 'SET_USER_INFO':
-      const { id, email, role, givenName } = action.payload
+      const { id, email, role, firstName, lastName } = action.payload
       return {
         ...state,
         id,
         email,
         role,
-        givenName,
+        firstName,
+        lastName
       }
     case 'EDIT_PROGRESS':
       return { ...state, progress: action.payload }

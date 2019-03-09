@@ -17,7 +17,6 @@ const IndexPage = (props) => {
   
   const getContent = ()=> {  
   return props.content.contentArray.map((item)=> {
-    if(props.user.isLoggedIn === false) navigate("/login/")
       return (
         <Body key = {item.key} title = {item.title}>
         { renderContent(item.content) }

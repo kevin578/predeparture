@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField'
 import Amplify, { Auth } from 'aws-amplify'
 import Modal from 'react-modal'
 import SiteHeader from '../components/siteHeader'
-import NewUserModal from '../components/newUserModal'
 
 const UserTable = styled.table`
   width: 800px;
@@ -45,7 +44,7 @@ export default class StudentList extends Component {
     return this.state.users.map(user => {
       return (
         <tr key={user.email}>
-          <td>{user.givenName}</td>
+          <td>{`${user.firstName} ${user.lastName}`}</td>
           <td>{user.email}</td>
           <td>{user.role}</td>
         </tr>
@@ -83,10 +82,6 @@ export default class StudentList extends Component {
           >
             Add User
           </AddUserButton>
-          <NewUserModal
-            isOpen={this.state.showModal}
-            closeModal={() => this.setState({ showModal: false })}
-          />
         </Container>
       </React.Fragment>
     )

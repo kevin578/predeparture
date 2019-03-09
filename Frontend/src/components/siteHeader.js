@@ -65,16 +65,17 @@ class SiteHeader extends Component {
   }
 
   getAuthState = async () => {
-    const user = await Auth.currentAuthenticatedUser()
+    const user = await Auth.currentAuthenticatedUser();
+    if (user.Session == null) return;
     let userInfo = await axios.get(
       'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
       { params: { id: user.username } }
     )
-    const { email, givenName, id, progress, role} = userInfo.data.Item;
-    userInfo = {email, givenName, id, progress, role}
+    const { email, firstName, lastName, id, progress, role} = userInfo.data.Item;
+    userInfo = {email, firstName, lastName, id, progress, role};
     this.props.setUserInfo(userInfo)
     this.props.editProgress(progress)
-    this.props.setLoginState(true)
+    this.props.setLoginState(true);
   }
 
   getContent = async () => {

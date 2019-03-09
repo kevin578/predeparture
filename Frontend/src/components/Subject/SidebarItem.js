@@ -39,6 +39,7 @@ class SidebarItem extends React.Component {
 
   checkIfCompleted = () => {
     const itemKey = this.props.content.contentArray[this.props.index].key;
+    if (!itemKey) return;
     let {progress} = this.props.user;
     if (progress.includes(itemKey)) {
       return true;

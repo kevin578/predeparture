@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button'
 import Amplify, { Auth } from 'aws-amplify'
+import NewUserModal from '../components/newUserModal'
 import { isLoggedIn, setLoginState } from '../state/actions'
 import { navigate } from 'gatsby';
 
@@ -19,6 +20,16 @@ const LoginForm = styled.div`
   margin-right: auto;
   width: 400px;
   height: 300px;
+`
+
+const SignUpMessage = styled.p`
+  font-size: 14px;
+  margin-top: 25px;
+`
+
+const SignUpLink = styled.a`
+  color: #ff775b;
+  cursor: pointer;
 `
 
 const TextInput = styled(TextField)`
@@ -57,7 +68,8 @@ class Login extends Component {
     password: '',
     isLoading: false,
     userErrorMessage: "",
-    passwordErrorMessage: ""
+    passwordErrorMessage: "",
+    showModal: false
   }
 
   componentDidMount() {
@@ -150,7 +162,12 @@ class Login extends Component {
             variant="outlined"
           />
           { this.getButton() }
+          <SignUpMessage>Don't have an account? <SignUpLink onClick = {()=> this.setState({showModal: true})}>Sign up here.</SignUpLink></SignUpMessage>
         </LoginForm>
+        <NewUserModal
+            isOpen={this.state.showModal}
+            closeModal={() => this.setState({ showModal: false })}
+          />
       </div>
     )
   }

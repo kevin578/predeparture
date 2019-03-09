@@ -10,9 +10,11 @@ export async function addUser(event) {
         Item: {
           id: data.id,
           email: data.email,
-          givenName: data.givenName,
+          firstName: data.firstName,
+          lastName: data.lastName,
           createdAt: Date.now(),
-          role: data.role
+          role: data.role,
+          progress: []
         }
       };
     
