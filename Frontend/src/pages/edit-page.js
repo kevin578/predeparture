@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server'
 import styled from 'styled-components'
 import brace from 'brace'
 import AceEditor from 'react-ace'
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 import axios from 'axios'
 import Modal from 'react-modal'
 import ReactHtmlParser, {
@@ -19,9 +19,10 @@ import SiteHeader from '../components/siteHeader'
 import Sidebar from '../components/Subject/Sidebar'
 import { setContent, setPage } from './../state/actions'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import short from 'short-uuid';
-import queryString from "query-string";
-import renderContent from "../lib/renderContent"
+import short from 'short-uuid'
+import queryString from 'query-string'
+import renderContent from '../lib/renderContent'
+import AuthCheck from '../components/AuthCheck'
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -111,14 +112,14 @@ const customStyles = {
   content: {
     width: 380,
     height: 200,
-    marginLeft: "auto",
-    marginRight: "auto",
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: 150,
-    padding: 0
+    padding: 0,
   },
   overlay: {
-    zIndex: 100 
-  }
+    zIndex: 100,
+  },
 }
 
 const DeleteInstructions = styled.p`
@@ -127,13 +128,12 @@ const DeleteInstructions = styled.p`
   padding: 25px;
 `
 const DeleteButton = styled(HomemadeButton)`
-    background: #d37e7e;
-    width: 150px;
-
+  background: #d37e7e;
+  width: 150px;
 `
 const GoBackButton = styled(HomemadeButton)`
-    background: #504db7;
-    width: 150px;
+  background: #504db7;
+  width: 150px;
 `
 const ButtonContainer = styled.div`
   margin-top: 25px;
@@ -151,27 +151,27 @@ class editPage extends React.Component {
       isSaving: false,
       warning: '',
       showDeleteModal: false,
-      href: ()=>  typeof window !== `undefined` ? window.location.href : ""
+      href: () => (typeof window !== `undefined` ? window.location.href : ''),
     }
   }
 
   componentDidMount() {
     this.loadContent()
-    if(this.props.user.isLoggedIn === false) navigate("/login/");
+    if (this.props.user.isLoggedIn === false) navigate('/login/')
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.page.number != this.state.href) {
-      const oldTitle = this.state.title;
-      const oldContent = this.state.editorContent;
-      const {pageNumber} = queryString.parse(prevProps.location.search)
+      const oldTitle = this.state.title
+      const oldContent = this.state.editorContent
+      const { pageNumber } = queryString.parse(prevProps.location.search)
       this.setContent()
       this.setState({ href: prevProps.page.number })
-      let  { contentArray } = prevProps.content;
-      if(!contentArray[pageNumber]) return;
-      contentArray[pageNumber].title = oldTitle;
-      contentArray[pageNumber].content = oldContent;
-      this.props.setContent(contentArray);
+      let { contentArray } = prevProps.content
+      if (!contentArray[pageNumber]) return
+      contentArray[pageNumber].title = oldTitle
+      contentArray[pageNumber].content = oldContent
+      this.props.setContent(contentArray)
     }
   }
 
@@ -218,19 +218,18 @@ class editPage extends React.Component {
 
   deleteItem = () => {
     if (typeof window !== `undefined`) window.onbeforeunload = () => ''
-    const  { contentArray } = this.props.content;
-    const {page, setContent, setPage} = this.props;
-    const newContent = contentArray.filter((item, index)=> {
-      if(!(index === parseInt(page.number))) return item;
+    const { contentArray } = this.props.content
+    const { page, setContent, setPage } = this.props
+    const newContent = contentArray.filter((item, index) => {
+      if (!(index === parseInt(page.number))) return item
     })
-    const newPageNumber = newPageNumber > 0 ? parseInt(page.number) - 1 : 0;
-    setContent(newContent);
-    setPage(newPageNumber);
+    const newPageNumber = newPageNumber > 0 ? parseInt(page.number) - 1 : 0
+    setContent(newContent)
+    setPage(newPageNumber)
     this.setState({
       title: newContent[newPageNumber].title,
       content: newContent[newPageNumber].content,
-      showDeleteModal: false
-
+      showDeleteModal: false,
     })
   }
 
@@ -275,7 +274,7 @@ class editPage extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
         <Wrapper>
           <Navbar />
           <Sidebar
@@ -290,25 +289,29 @@ class editPage extends React.Component {
               onChange={this.onChange}
               name="title"
             />
-            {typeof window !== 'undefined' && <AceEditor
-              mode="html"
-              theme="solarized_light"
-              onChange={this.onEditorChange}
-              value={this.state.editorContent}
-              name="editor"
-              editorProps={{ $blockScrolling: true }}
-              width="500px"
-              height="200px"
-              fontSize={14}
-              showGutter={false}
-              wrapEnabled = {true}
-              setOptions = {{
-              indentedSoftWrap: false
-              }}
-            />}
+            {typeof window !== 'undefined' && (
+              <AceEditor
+                mode="html"
+                theme="solarized_light"
+                onChange={this.onEditorChange}
+                value={this.state.editorContent}
+                name="editor"
+                editorProps={{ $blockScrolling: true }}
+                width="500px"
+                height="200px"
+                fontSize={14}
+                showGutter={false}
+                wrapEnabled={true}
+                setOptions={{
+                  indentedSoftWrap: false,
+                }}
+              />
+            )}
           </EditorContainer>
           <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
-          <DeletePageButton onClick={()=> this.setState({showDeleteModal: true})}>
+          <DeletePageButton
+            onClick={() => this.setState({ showDeleteModal: true })}
+          >
             Delete Page
           </DeletePageButton>
           {this.getButton()}
@@ -318,15 +321,24 @@ class editPage extends React.Component {
             contentLabel="Delete Modal"
             ariaHideApp={false}
           >
-            <DeleteInstructions>Are you sure you want to delete the item <em>{this.state.title}</em>?</DeleteInstructions>
+            <DeleteInstructions>
+              Are you sure you want to delete the item{' '}
+              <em>{this.state.title}</em>?
+            </DeleteInstructions>
             <ButtonContainer>
-              <GoBackButton onClick = {()=> this.setState({showDeleteModal: false})}>Nah, forget about it.</GoBackButton>
-              <DeleteButton onClick = {this.deleteItem}>Yes, delete it.</DeleteButton>
+              <GoBackButton
+                onClick={() => this.setState({ showDeleteModal: false })}
+              >
+                Nah, forget about it.
+              </GoBackButton>
+              <DeleteButton onClick={this.deleteItem}>
+                Yes, delete it.
+              </DeleteButton>
             </ButtonContainer>
           </Modal>
           <Content>{renderContent(this.state.editorContent)}</Content>
         </Wrapper>
-      </React.Fragment>
+      </AuthCheck>
     )
   }
 }
@@ -335,7 +347,7 @@ function mapStateToProps(state) {
   return {
     content: state.content,
     page: state.page,
-    user: state.user
+    user: state.user,
   }
 }
 

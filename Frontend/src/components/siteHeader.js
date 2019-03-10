@@ -5,8 +5,15 @@ import { Link, navigate } from 'gatsby'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Amplify, { Auth } from 'aws-amplify'
-import { setLoginState, setContent, setPage, setUserInfo, editProgress } from '../state/actions'
+import {
+  setLoginState,
+  setContent,
+  setPage,
+  setUserInfo,
+  editProgress,
+} from '../state/actions'
 import queryString from 'query-string'
+import AuthCheck from './AuthCheck'
 
 Amplify.configure({
   Auth: {
@@ -65,17 +72,24 @@ class SiteHeader extends Component {
   }
 
   getAuthState = async () => {
-    const user = await Auth.currentAuthenticatedUser();
-    if (user.Session == null) return;
+    const user = await Auth.currentAuthenticatedUser()
+    if (!user.username) return
     let userInfo = await axios.get(
       'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
       { params: { id: user.username } }
     )
-    const { email, firstName, lastName, id, progress, role} = userInfo.data.Item;
-    userInfo = {email, firstName, lastName, id, progress, role};
+    const {
+      email,
+      firstName,
+      lastName,
+      id,
+      progress,
+      role,
+    } = userInfo.data.Item
+    userInfo = { email, firstName, lastName, id, progress, role }
     this.props.setUserInfo(userInfo)
     this.props.editProgress(progress)
-    this.props.setLoginState(true);
+    this.props.setLoginState(true)
   }
 
   getContent = async () => {
@@ -100,15 +114,17 @@ class SiteHeader extends Component {
     const { user } = this.props
     return (
       <Wrapper>
-        <Title to="/">PreDeparture CheckIn</Title>
-        {user.isLoggedIn && (
-          <Links>
+        <Title to="/">Study Abroad Pre-Departure</Title>
+        <Links>
+          <AuthCheck role="admin">
             <HeaderLink to="/edit-page/">Editor</HeaderLink>
             <HeaderLink to="/student-list/">Students</HeaderLink>
             <HeaderLink to="/guide/">Guide</HeaderLink>
-            <HeaderItem onClick={this.logout}>Logout</HeaderItem>
-          </Links>
-        )}
+          </AuthCheck>
+          <AuthCheck>
+            <HeaderItem onClick={this.logout}>Logout</HeaderItem>{' '}
+          </AuthCheck>
+        </Links>
       </Wrapper>
     )
   }

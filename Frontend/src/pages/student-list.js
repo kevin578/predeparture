@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import Amplify, { Auth } from 'aws-amplify'
 import Modal from 'react-modal'
 import SiteHeader from '../components/siteHeader'
+import AuthCheck from '../components/AuthCheck'
 
 const UserTable = styled.table`
   width: 800px;
@@ -62,7 +63,7 @@ export default class StudentList extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <AuthCheck authRedirect = "/login" roleRedirect = "/" role = "admin">
         <SiteHeader />
         <Container>
           <UserTable>
@@ -83,7 +84,7 @@ export default class StudentList extends Component {
             Add User
           </AddUserButton>
         </Container>
-      </React.Fragment>
+      </AuthCheck>
     )
   }
 }

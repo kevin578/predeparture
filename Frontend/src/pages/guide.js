@@ -9,19 +9,19 @@ import 'brace/mode/html'
 import 'brace/theme/solarized_light'
 import AceEditor from 'react-ace'
 import renderContent from '../lib/renderContent'
-import { relative } from 'path';
-import { defaultContent } from "../lib/defaultGuideString"
-import SiteHeader from "../components/siteHeader"
+import { relative } from 'path'
+import { defaultContent } from '../lib/defaultGuideString'
+import SiteHeader from '../components/siteHeader'
+import AuthCheck from '../components/AuthCheck'
 
 const Page = styled.div`
   display: flex;
 `
 
-const EditorContainer = styled.div`
-`
+const EditorContainer = styled.div``
 
 const ContentContainer = styled.div`
-  margin-top: 90px;  
+  margin-top: 90px;
   margin-left: 120px;
   height: 1000px;
   width: 500px;
@@ -35,7 +35,7 @@ const Content = styled.div`
 
 export default class GuideEditor extends Component {
   state = {
-    editorContent: ''
+    editorContent: '',
   }
 
   componentDidMount() {
@@ -43,7 +43,7 @@ export default class GuideEditor extends Component {
   }
 
   setDefaultContent() {
-    this.setState({editorContent: defaultContent});
+    this.setState({ editorContent: defaultContent })
   }
 
   onEditorChange = newValue => {
@@ -53,35 +53,38 @@ export default class GuideEditor extends Component {
 
   render() {
     return (
-
-      <Page>
-        <SiteHeader />
-        <EditorContainer>
-          { typeof window !== 'undefined' && <AceEditor
-            mode="html"
-            theme="solarized_light"
-            onChange={this.onEditorChange}
-            value={this.state.editorContent}
-            name="editor"
-            editorProps={{ $blockScrolling: true }}
-            width="500px"
-            height="1200px"
-            fontSize={14}
-            showGutter={false}
-            wrapEnabled={true}
-            setOptions={{
-              indentedSoftWrap: false,
-            }}
-            style={{
-              top: 90,
-              left: 40,
-            }}
-          /> }
-        </EditorContainer>
-        <ContentContainer>
-          <Content>{renderContent(this.state.editorContent)}</Content>
-        </ContentContainer>
-      </Page>
+      <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
+        <Page>
+          <SiteHeader />
+          <EditorContainer>
+            {typeof window !== 'undefined' && (
+              <AceEditor
+                mode="html"
+                theme="solarized_light"
+                onChange={this.onEditorChange}
+                value={this.state.editorContent}
+                name="editor"
+                editorProps={{ $blockScrolling: true }}
+                width="500px"
+                height="1200px"
+                fontSize={14}
+                showGutter={false}
+                wrapEnabled={true}
+                setOptions={{
+                  indentedSoftWrap: false,
+                }}
+                style={{
+                  top: 90,
+                  left: 40,
+                }}
+              />
+            )}
+          </EditorContainer>
+          <ContentContainer>
+            <Content>{renderContent(this.state.editorContent)}</Content>
+          </ContentContainer>
+        </Page>
+      </AuthCheck>
     )
   }
 }
