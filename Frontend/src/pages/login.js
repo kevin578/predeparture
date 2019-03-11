@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { connect } from 'react-redux';
-import Modal from 'react-modal';
+import { connect } from 'react-redux'
+import Modal from 'react-modal'
+import axios from 'axios'
 import SiteHeader from '../components/siteHeader'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
-import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from '@material-ui/core/FormHelperText'
 import Button from '@material-ui/core/Button'
 import Amplify, { Auth } from 'aws-amplify'
 import NewUserModal from '../components/newUserModal'
-import { isLoggedIn, setLoginState } from '../state/actions'
-import { navigate } from 'gatsby';
+import { isLoggedIn, setLoginState, setUserInfo, editProgress } from '../state/actions'
+import { navigate } from 'gatsby'
 
 const LoginForm = styled.div`
   position: relative;
@@ -39,8 +40,8 @@ const TextInput = styled(TextField)`
   }
 `
 const ErrorMessage = styled(FormHelperText)`
-    margin-bottom: 20px;
-    width: 270px;
+  margin-bottom: 20px;
+  width: 270px;
 `
 
 const SubmitButton = styled(Button)`
@@ -51,7 +52,6 @@ const SubmitButton = styled(Button)`
     background: #345afb;
   }
 `
-
 
 const Progress = styled(CircularProgress)`
   && {
@@ -67,13 +67,12 @@ class Login extends Component {
     email: '',
     password: '',
     isLoading: false,
-    userErrorMessage: "",
-    passwordErrorMessage: "",
-    showModal: false
+    userErrorMessage: '',
+    passwordErrorMessage: '',
+    showModal: false,
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   handleChange = name => event => {
     this.setState({
@@ -82,42 +81,68 @@ class Login extends Component {
   }
 
   handleError = err => {
-      if (err === "Username cannot be empty") {
-        return this.setState({userErrorMessage: "Please enter a username."});
-        return;
-      }
-      switch(err.message) {
-        case "User does not exist.":
-          return this.setState({userErrorMessage: err.message});
-        case "null failed with error Generate callenges lambda cannot be called..":
-          return this.setState({passwordErrorMessage: "Please enter a password."});
-        case "Incorrect username or password.":
-          return this.setState({passwordErrorMessage: "Incorrect password."})
-        default:
-          return
-      }
+    if (err === 'Username cannot be empty') {
+      return this.setState({ userErrorMessage: 'Please enter a username.' })
+      return
+    }
+    switch (err.message) {
+      case 'User does not exist.':
+        return this.setState({ userErrorMessage: err.message })
+      case 'null failed with error Generate callenges lambda cannot be called..':
+        return this.setState({
+          passwordErrorMessage: 'Please enter a password.',
+        })
+      case 'Incorrect username or password.':
+        return this.setState({ passwordErrorMessage: 'Incorrect password.' })
+      default:
+        return
+    }
   }
 
   onSubmit = () => {
     //const { setState } = this
     const { email, password } = this.state
     const { setLoginState } = this.props
-    this.setState({ 
+    this.setState({
       isLoading: true,
-      userErrorMessage: "",
-      passwordErrorMessage: ""
+      userErrorMessage: '',
+      passwordErrorMessage: '',
     })
     Auth.signIn(email, password)
       .then(resp => {
         setLoginState(true)
-        this.setState({ isLoading: false });
-        navigate("/edit-page/");
+        this.setState({ isLoading: false })
+        this.getUserData(resp.username)
       })
       .catch(err => {
         console.log(err)
-        this.setState({ isLoading: false });
-        this.handleError(err);
+        this.setState({ isLoading: false })
+        this.handleError(err)
       })
+  }
+
+  getUserData = async (userId) => {
+    let userInfo = await axios.get(
+      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
+      { params: { id: userId} }
+    )
+    const {
+      email,
+      firstName,
+      lastName,
+      id,
+      progress,
+      role,
+    } = userInfo.data.Item
+    userInfo = { email, firstName, lastName, id, progress, role }
+    this.props.setUserInfo(userInfo)
+    this.props.editProgress(progress)
+    if (role == 'admin') {
+      navigate('/edit-page/')
+    }
+    else {
+      navigate('/')
+    }
   }
 
   getButton = () => {
@@ -132,7 +157,6 @@ class Login extends Component {
         >
           Login
         </SubmitButton>
-
       )
     }
   }
@@ -143,8 +167,8 @@ class Login extends Component {
         <SiteHeader />
         <LoginForm>
           <TextInput
-            error = {this.state.userErrorMessage ? true:false}
-            helperText = {this.state.userErrorMessage}
+            error={this.state.userErrorMessage ? true : false}
+            helperText={this.state.userErrorMessage}
             id="outlined-name"
             label="Email"
             value={this.state.email}
@@ -152,8 +176,8 @@ class Login extends Component {
             variant="outlined"
           />
           <TextInput
-            error = {this.state.passwordErrorMessage ? true:false}
-            helperText = {this.state.passwordErrorMessage}
+            error={this.state.passwordErrorMessage ? true : false}
+            helperText={this.state.passwordErrorMessage}
             id="outlined-name"
             label="Password"
             type="password"
@@ -161,13 +185,18 @@ class Login extends Component {
             onChange={this.handleChange('password')}
             variant="outlined"
           />
-          { this.getButton() }
-          <SignUpMessage>Don't have an account? <SignUpLink onClick = {()=> this.setState({showModal: true})}>Sign up here.</SignUpLink></SignUpMessage>
+          {this.getButton()}
+          <SignUpMessage>
+            Don't have an account?{' '}
+            <SignUpLink onClick={() => this.setState({ showModal: true })}>
+              Sign up here.
+            </SignUpLink>
+          </SignUpMessage>
         </LoginForm>
         <NewUserModal
-            isOpen={this.state.showModal}
-            closeModal={() => this.setState({ showModal: false })}
-          />
+          isOpen={this.state.showModal}
+          closeModal={() => this.setState({ showModal: false })}
+        />
       </div>
     )
   }
@@ -175,5 +204,5 @@ class Login extends Component {
 
 export default connect(
   null,
-  { setLoginState }
+  { setLoginState, setUserInfo, editProgress }
 )(Login)

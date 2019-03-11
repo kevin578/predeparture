@@ -23,7 +23,9 @@ export default function userReducer(state = defaultUserState, action) {
         lastName
       }
     case 'EDIT_PROGRESS':
-      return { ...state, progress: action.payload }
+      return { ...state, progress: action.payload };
+    case 'CLEAR_USER':
+      return {...state, id: '', email: '', role: '', firstName: '', lastName: ''}
     default:
       return state
   }

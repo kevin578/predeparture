@@ -11,6 +11,7 @@ import {
   setPage,
   setUserInfo,
   editProgress,
+  clearUserInfo
 } from '../state/actions'
 import queryString from 'query-string'
 import AuthCheck from './AuthCheck'
@@ -66,30 +67,8 @@ const HeaderLink = styled(Link)`
 
 class SiteHeader extends Component {
   componentDidMount() {
-    this.getAuthState()
     this.getContent()
     this.setPageNumber()
-  }
-
-  getAuthState = async () => {
-    const user = await Auth.currentAuthenticatedUser()
-    if (!user.username) return
-    let userInfo = await axios.get(
-      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getUserById',
-      { params: { id: user.username } }
-    )
-    const {
-      email,
-      firstName,
-      lastName,
-      id,
-      progress,
-      role,
-    } = userInfo.data.Item
-    userInfo = { email, firstName, lastName, id, progress, role }
-    this.props.setUserInfo(userInfo)
-    this.props.editProgress(progress)
-    this.props.setLoginState(true)
   }
 
   getContent = async () => {
@@ -107,6 +86,7 @@ class SiteHeader extends Component {
   logout = async () => {
     await Auth.signOut()
     this.props.setLoginState(false)
+    this.props.clearUserInfo()
     navigate('/login/')
   }
 
@@ -137,5 +117,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setLoginState, setContent, setPage, setUserInfo, editProgress }
+  { setLoginState, setContent, setPage, setUserInfo, editProgress, clearUserInfo }
 )(SiteHeader)

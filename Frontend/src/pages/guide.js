@@ -13,6 +13,7 @@ import { relative } from 'path'
 import { defaultContent } from '../lib/defaultGuideString'
 import SiteHeader from '../components/siteHeader'
 import AuthCheck from '../components/AuthCheck'
+import LoadUserInfo from '../components/LoadUserInfo'
 
 const Page = styled.div`
   display: flex;
@@ -53,6 +54,7 @@ export default class GuideEditor extends Component {
 
   render() {
     return (
+      <LoadUserInfo>
       <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
         <Page>
           <SiteHeader />
@@ -85,6 +87,7 @@ export default class GuideEditor extends Component {
           </ContentContainer>
         </Page>
       </AuthCheck>
+      </LoadUserInfo>
     )
   }
 }

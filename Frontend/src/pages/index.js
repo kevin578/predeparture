@@ -10,6 +10,7 @@ import { Body, Header, Video } from '../components/Subject/SubjectStyles'
 import Button from '../components/Subject/Button'
 import renderContent from '../lib/renderContent'
 import AuthCheck from '../components/AuthCheck'
+import LoadUserInfo from '../components/LoadUserInfo'
 
 const IndexPage = props => {
   const getContent = () => {

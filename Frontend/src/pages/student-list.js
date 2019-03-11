@@ -9,6 +9,7 @@ import Modal from 'react-modal'
 import SiteHeader from '../components/siteHeader'
 import AuthCheck from '../components/AuthCheck'
 import Select from '@material-ui/core/Select'
+import LoadUserInfo from '../components/LoadUserInfo'
 
 const UserTable = styled.table`
   width: 800px;

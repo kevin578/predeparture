@@ -23,6 +23,7 @@ import short from 'short-uuid'
 import queryString from 'query-string'
 import renderContent from '../lib/renderContent'
 import AuthCheck from '../components/AuthCheck'
+import LoadUserInfo from '../components/LoadUserInfo'
 
 const Wrapper = styled.div`
   margin-top: -1px;
