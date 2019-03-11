@@ -21,7 +21,6 @@ function AuthCheck(props) {
   useEffect(()=> {
     checkRole();
     roleRedirect();
-    console.log("run")
   },[props.user.role])
 
   function checkUserAuth() {
@@ -43,9 +42,7 @@ function AuthCheck(props) {
   function roleRedirect() {
     if (!props.roleRedirect) return
     if (!props.user.role) return;
-    console.log(props.role, props.user.role)
     if (props.role != props.user.role) {
-        console.log("go")
       navigate(props.roleRedirect)
     }
   }

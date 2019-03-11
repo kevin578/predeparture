@@ -129,15 +129,6 @@ export default class NewUserModal extends Component {
             variant="outlined"
             style={styles.textField}
           />
-
-          {/* <Select
-            native
-            value={this.state.role}
-            onChange={this.handleChange('role')}
-          >
-            <option value={'student'}>Student</option>
-            <option value={'admin'}>Admin</option>
-          </Select> */}
           <Button
             variant="contained"
             color="primary"

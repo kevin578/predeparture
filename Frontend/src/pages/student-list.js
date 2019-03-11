@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import {connect} from 'react-redux'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Amplify, { Auth } from 'aws-amplify'
 import Modal from 'react-modal'
 import SiteHeader from '../components/siteHeader'
 import AuthCheck from '../components/AuthCheck'
+import Select from '@material-ui/core/Select'
 
 const UserTable = styled.table`
   width: 800px;
@@ -21,13 +23,14 @@ const Container = styled.div`
   padding: 50px;
 `
 
-export default class StudentList extends Component {
+class StudentList extends Component {
   state = {
     users: [],
     showModal: false,
     newUserName: '',
     newUserEmail: '',
     newUserRole: '',
+    role: '',
   }
 
   componentDidMount() {
@@ -47,14 +50,33 @@ export default class StudentList extends Component {
         <tr key={user.email}>
           <td>{`${user.firstName} ${user.lastName}`}</td>
           <td>{user.email}</td>
-          <td>{user.role}</td>
+          <td>{this.getProgress(user.role)}</td>
+          <td>
+            <Select
+              native
+              value={user.role}
+              // onChange={this.handleRoleChange('role')}
+            >
+              <option value={'student'}>Student</option>
+              <option value={'admin'}>Admin</option>
+            </Select>
+          </td>
         </tr>
       )
     })
   }
 
-  handleChange = event => {
-    console.log(event)
+  getProgress = (role)=> {
+    if (role == 'admin') {
+      return "*"
+    }
+    return "0%"
+  }
+
+  handleRoleChange = event => {
+    this.setState({
+      role: "student",
+    })
   }
 
   showModal = () => {
@@ -63,7 +85,7 @@ export default class StudentList extends Component {
 
   render() {
     return (
-      <AuthCheck authRedirect = "/login" roleRedirect = "/" role = "admin">
+      <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
         <SiteHeader />
         <Container>
           <UserTable>
@@ -71,20 +93,20 @@ export default class StudentList extends Component {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Progress</th>
                 <th>Role</th>
               </tr>
               {this.renderUsers()}
             </tbody>
           </UserTable>
-          <AddUserButton
-            variant="contained"
-            color="secondary"
-            onClick={this.showModal}
-          >
-            Add User
-          </AddUserButton>
         </Container>
       </AuthCheck>
     )
   }
 }
+
+const mapStateToProps = (state)=> ({
+  user: state.user
+})
+
+export default connect(mapStateToProps)(StudentList)
