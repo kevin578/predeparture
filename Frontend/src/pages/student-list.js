@@ -56,7 +56,7 @@ class StudentList extends Component {
             <Select
               native
               value={user.role}
-              // onChange={this.handleRoleChange('role')}
+              onChange={this.handleRoleChange('role')}
             >
               <option value={'student'}>Student</option>
               <option value={'admin'}>Admin</option>

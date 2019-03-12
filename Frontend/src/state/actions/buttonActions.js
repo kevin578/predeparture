@@ -6,13 +6,13 @@ export const checkAnswers = (correct, answer) => {
       } 
 };
   
-  export const resetAnswers = () => {
-    return dispatch => {
-      dispatch({
-        type: "RESET_ANSWER"
-      });
-    };
-  };
+  // export const resetAnswers = () => {
+  //   return dispatch => {
+  //     dispatch({
+  //       type: "RESET_ANSWER"
+  //     });
+  //   };
+  // };
   
   export const addCheckbox = () => {
     return dispatch => {

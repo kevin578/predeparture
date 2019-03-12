@@ -24,6 +24,7 @@ import queryString from 'query-string'
 import renderContent from '../lib/renderContent'
 import AuthCheck from '../components/AuthCheck'
 import LoadUserInfo from '../components/LoadUserInfo'
+import MediaModal from '../components/MedialModal'
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -83,6 +84,13 @@ const SaveButton = styled(HomemadeButton)`
   background: #7ed399;
   grid-column-start: 2;
   grid-row-start: 4;
+`
+
+const MediaButton = styled(HomemadeButton)`
+  background: #57b3e5;
+  grid-column-start: 3;
+  grid-row-start: 3;
+  margin-top: 75px;
 `
 
 const ErrorMessage = styled.p`
@@ -152,6 +160,7 @@ class editPage extends React.Component {
       isSaving: false,
       warning: '',
       showDeleteModal: false,
+      showMediaModal: false,
       href: () => (typeof window !== `undefined` ? window.location.href : ''),
     }
   }
@@ -315,7 +324,15 @@ class editPage extends React.Component {
           >
             Delete Page
           </DeletePageButton>
+          <MediaButton onClick={() => this.setState({ showMediaModal: true })}>
+            Media
+          </MediaButton>
+
           {this.getButton()}
+          <MediaModal
+            isOpen={this.state.showMediaModal}
+            closeModal={() => this.setState({ showMediaModal: false })}
+          />
           <Modal
             isOpen={this.state.showDeleteModal}
             style={customStyles}

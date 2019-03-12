@@ -30,14 +30,6 @@ export const setSubject = subject => {
   }
 }
 
-export const resetAnswers = () => {
-  return dispatch => {
-    dispatch({
-      type: 'RESET_ANSWER',
-    })
-  }
-}
-
 export const setPageLength = length => {
   return {
     type: 'SET_PAGE_LENGTH',
@@ -72,5 +64,11 @@ export const addToRemainingQuestions = () => {
 export const removeFromRemaingQuestions = () => {
   return {
     type: 'REMOVE_FROM_REMAINING_QUESTIONS',
+  }
+}
+
+export const resetAnswers = () => {
+  return {
+    type: 'RESET_REMAINING_QUESTIONS'
   }
 }

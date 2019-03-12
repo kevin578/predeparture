@@ -21,6 +21,11 @@ function LoadUserInfo(props) {
         identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343',
         userPoolWebClientId: '4fd480nivo5qc7ssmjv02eqo24',
       },
+      Storage: {
+        region: 'US_EAST_1',
+        bucket: 'clark-predeparture',
+        identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343'
+      },
   });
 }
 

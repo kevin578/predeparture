@@ -78,7 +78,7 @@ class Question extends Component {
   }
 
   componentWillUnmount() {
-    if (this.state.prevState == "correct") {
+    if (this.state.prevState == "incorrect") {
       this.props.removeFromRemaingQuestions();
     }
   }

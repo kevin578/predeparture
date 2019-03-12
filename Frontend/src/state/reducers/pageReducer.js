@@ -22,6 +22,8 @@ export default function pageReducer(state = defaultPageState, action) {
         return {...state, remainingQuestions: state.remainingQuestions + 1}
     case "REMOVE_FROM_REMAINING_QUESTIONS":
         return {...state, remainingQuestions: state.remainingQuestions - 1}
+    case "RESET_REMAINING_QUESTIONS":
+        return {...state, remainingQuestions: 0}
     default:
         return state;
     }
