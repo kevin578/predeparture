@@ -19,11 +19,16 @@ import AuthCheck from './AuthCheck'
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: 'US_EAST_1',
+    region: 'us-east-1',
     userPoolId: 'us-east-1_8tnRUiOnT',
     identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343',
     userPoolWebClientId: '4fd480nivo5qc7ssmjv02eqo24',
   },
+  Storage: { 
+    bucket:'clark-predeparture',
+    region: 'us-east-1',
+    identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343'
+   }
 })
 
 const Wrapper = styled.nav`
