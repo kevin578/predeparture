@@ -34,7 +34,7 @@ Amplify.configure({
 const Wrapper = styled.nav`
   width: 100%;
   height: 60px;
-  background: #345afb;
+  background: #c00;
   position: fixed;
   z-index: 99;
   display: flex;

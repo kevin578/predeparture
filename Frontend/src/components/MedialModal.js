@@ -19,7 +19,9 @@ const modalStyles = {
 
 export default function MedialModal(props) {
 
-    useEffect(()=> {
+  
+
+  useEffect(()=> {
     loadContent()
   }, []);
 

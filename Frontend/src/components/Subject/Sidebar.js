@@ -8,7 +8,7 @@ import media from "./mediaQueries";
 const Wrapper = styled.section`
   width: 340px;
   height: 100%;
-  background: #EAEBF7;
+  background: #e2dede;
   position: fixed;
   overflow: auto;
   margin-top: 60px;
@@ -19,7 +19,7 @@ const SidebarSubject = styled.div`
   position: fixed;
   width: 340px;
   height: 60px;
-  background: transparent;
+  background: #e2dede;
   text-align: center;
   border-top: 2px solid #979797;
   border-bottom: 1px solid #979797;

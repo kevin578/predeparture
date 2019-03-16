@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { updatePageNumber } from '../../functions'
 
 export const Wrapper = styled.button`
-  border: 4px solid #4c6eff;
-  background: #4c6eff;
+  border: 4px solid #c00;
+  background: #c00;
   box-shadow: 0 2px 4px 0 rgba(168, 168, 168, 0.5);
   border-radius: 10px;
   font-family: Helvetica-Bold;

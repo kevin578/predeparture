@@ -25,6 +25,7 @@ import renderContent from '../lib/renderContent'
 import AuthCheck from '../components/AuthCheck'
 import LoadUserInfo from '../components/LoadUserInfo'
 import MediaModal from '../components/MedialModal'
+import { updatePageNumber } from '../functions'
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -162,6 +163,7 @@ class editPage extends React.Component {
       showDeleteModal: false,
       showMediaModal: false,
       href: () => (typeof window !== `undefined` ? window.location.href : ''),
+      justDeleted: false
     }
   }
 
@@ -172,6 +174,10 @@ class editPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.page.number != this.state.href) {
+      if (this.state.justDeleted) {
+        this.setState({justDeleted: false})
+        return;
+      }
       const oldTitle = this.state.title
       const oldContent = this.state.editorContent
       const { pageNumber } = queryString.parse(prevProps.location.search)
@@ -224,6 +230,7 @@ class editPage extends React.Component {
     const { page } = this.props
     contentArray.splice(page.number + 1, 0, newItem)
     this.props.setContent(contentArray)
+    updatePageNumber(page.number + 1)
   }
 
   deleteItem = () => {
@@ -233,14 +240,19 @@ class editPage extends React.Component {
     const newContent = contentArray.filter((item, index) => {
       if (!(index === parseInt(page.number))) return item
     })
-    const newPageNumber = newPageNumber > 0 ? parseInt(page.number) - 1 : 0
     setContent(newContent)
-    setPage(newPageNumber)
+    const newPageNumber = parseInt(page.number) > 0 ? parseInt(page.number) - 1 : 0
+    updatePageNumber(newPageNumber);
+    this.setContent();
     this.setState({
       title: newContent[newPageNumber].title,
       content: newContent[newPageNumber].content,
       showDeleteModal: false,
+      href: page.number,
+      justDeleted: true
     })
+
+
   }
 
   saveContent = async () => {
@@ -324,6 +336,7 @@ class editPage extends React.Component {
           >
             Delete Page
           </DeletePageButton>
+
           <MediaButton onClick={() => this.setState({ showMediaModal: true })}>
             Media
           </MediaButton>

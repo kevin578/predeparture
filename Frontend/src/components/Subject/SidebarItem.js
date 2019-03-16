@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { resetAnswers } from '../../state/actions'
 import { updatePageNumber } from '../../functions'
+import checkmark from '../../images/check.png'
 
 const Wrapper = styled.div`
   width: 100%;
   height: 50px;
-  border-bottom: 2px solid ${props => (props.completed ? '#D8D8D8' : '#979797')};
+  border-bottom: 2px solid #979797;
   cursor: pointer;
   background: ${props => props.backgroundColor};
-  color: ${props => (props.completed ? '#fff' : 'default')};
   transition: 0.5s all;
   display: flex;
   justify-content: space-between;
@@ -22,6 +22,14 @@ const ItemName = styled.p`
   margin-right: 10px;
   width: 100%;
   font-size: 14px;
+`
+
+const Check = styled.img`
+width: 20px;
+position: relative;
+top: 10px;
+right: 15px;
+
 `
 
 class SidebarItem extends React.Component {
@@ -52,13 +60,10 @@ class SidebarItem extends React.Component {
   getColor = () => {
     const currentlySelected = this.props.index == this.props.page.number
     const completed = this.checkIfCompleted();
-    if (currentlySelected && !completed) {
+    if (currentlySelected) {
       return '#f7f7f7' //light grey
-    } else if (currentlySelected && completed) {
-      return '#88c47d' //light green
-    } else if (completed) {
-      return '#5BA84C' //dark green
-    } else {
+    } 
+     else {
       return 'transparent'
     }
   }
@@ -71,6 +76,7 @@ class SidebarItem extends React.Component {
         backgroundColor={() => this.getColor()}
       >
         <ItemName>{this.props.children}</ItemName>
+        {this.checkIfCompleted() && <Check src = {checkmark}/>}
       </Wrapper>
     )
   }
