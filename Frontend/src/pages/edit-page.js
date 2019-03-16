@@ -7,6 +7,7 @@ import brace from 'brace'
 import AceEditor from 'react-ace'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
+import { AddCircle, Delete, Image, Save } from '@material-ui/icons';
 import Modal from 'react-modal'
 import ReactHtmlParser, {
   processNodes,
@@ -31,7 +32,7 @@ const Wrapper = styled.div`
   margin-top: -1px;
   display: grid;
   grid-template-columns: 400px 525px auto;
-  grid-template-rows: 100px 120px 180px 50px 500px;
+  grid-template-rows: 100px 120px 180px 20px 500px;
 `
 
 const Navbar = styled(SiteHeader)``
@@ -68,6 +69,20 @@ const HomemadeButton = styled.div`
   text-align: center;
   cursor: pointer;
 `
+
+const IconContainer = styled.div`
+  grid-column-start: 3;
+  grid-row-start: 2;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+`
+
+const iconStyles = {
+  fontSize: 30,
+  marginBottom: 20,
+  cursor: "pointer"
+}
 
 const NewPageButton = styled(HomemadeButton)`
   background: #504db7;
@@ -287,7 +302,7 @@ class editPage extends React.Component {
     } else {
       return (
         <React.Fragment>
-          <SaveButton onClick={this.saveContent}>Save</SaveButton>
+          {/* <SaveButton onClick={this.saveContent}>Save</SaveButton> */}
           <ErrorMessage>{this.state.warning}</ErrorMessage>
         </React.Fragment>
       )
@@ -330,7 +345,13 @@ class editPage extends React.Component {
               />
             )}
           </EditorContainer>
-          <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
+          <IconContainer>
+            <AddCircle style = {iconStyles} onClick={this.newPage}/>
+            <Delete  style = {iconStyles} onClick={() => this.setState({ showDeleteModal: true })}/>
+            <Image style = {iconStyles} onClick={() => this.setState({ showMediaModal: true })}/>
+            <Save style = { iconStyles } onClick={this.saveContent}/>
+          </IconContainer>
+          {/* <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
           <DeletePageButton
             onClick={() => this.setState({ showDeleteModal: true })}
           >
@@ -339,7 +360,7 @@ class editPage extends React.Component {
 
           <MediaButton onClick={() => this.setState({ showMediaModal: true })}>
             Media
-          </MediaButton>
+          </MediaButton> */}
 
           {this.getButton()}
           <MediaModal
