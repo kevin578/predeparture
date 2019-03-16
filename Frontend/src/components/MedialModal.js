@@ -22,7 +22,7 @@ export default function MedialModal(props) {
   
 
   useEffect(()=> {
-    loadContent()
+    //loadContent()
   }, []);
 
   function loadContent() {
