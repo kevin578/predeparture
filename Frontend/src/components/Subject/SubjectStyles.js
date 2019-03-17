@@ -17,13 +17,24 @@ const ImageStyle = styled.img`
   marginbottom: 20px;
 `
 
+const parseMediaUrl = (url)=> {
+  if(!url || typeof url != 'string') return;
+  const urlFragment = url.slice(0, 4);
+  if (urlFragment == 'http') {
+    return url;
+  }
+  else {
+    return `https://s3.amazonaws.com/clark-predeparture/public/${url}`
+  }
+}
+
 export const Image = props => {
   let width = 622
   if (props.width) {
     width = props.width
   }
-
-  return <ImageStyle src={props.src} alt={props.src} width={width} />
+  const url = parseMediaUrl(props.src[0])
+  return <ImageStyle src={url} alt={props.src} width={width} />
 }
 
 const VideoStyle = styled.video`
@@ -48,7 +59,7 @@ export const Video = props => {
   if (videoPlayerType == 'html5') {
     return (
       <VideoStyle width={vidWidth} controls>
-        <source src={props.src} type="video/mp4" />
+        <source src={parseMediaUrl(props.src[0])} type="video/mp4" />
       </VideoStyle>
     )
   } else if (videoPlayerType == 'iframe') {
@@ -76,7 +87,7 @@ export const Text = styled.p``
 export const Link = props => {
   return (
     <a href={props.to} target="_blank">
-      {props.content}
+      {props.children}
     </a>
   )
 }

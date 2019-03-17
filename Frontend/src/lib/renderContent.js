@@ -31,7 +31,6 @@ const editorTypes = (item, index) => {
   }
 
   const key = `${item.type}${index}`
-  
   switch (item.type) {
     case 'header':
       return <Header key={key}>{item.props.children}</Header>
@@ -55,7 +54,7 @@ const editorTypes = (item, index) => {
       return <Image key={key} src={item.props.children} width = {item.props.width} />
     case 'button':
         return <Button key = {key}>{item.props.children}</Button>
-    case 'link':
+    case 'links':
         return <Link key = {key} to = {item.props.to}>{item.props.children}</Link>
     case 'list':
         return <List key = {key}>{item.props.children}</List>
