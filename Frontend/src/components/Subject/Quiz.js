@@ -53,7 +53,7 @@ const RadioButton = styled.input`
 `;
 
 function parseChoiceString(str) {
-  const splitString = str.split(',')
+  const splitString = str.split('--')
   return splitString.map((item, index)=> {
     if (index == 0) {
       return item
