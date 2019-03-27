@@ -98,9 +98,10 @@ export const Body = props => {
 
 export const List = props => {
   if (!props.children[0]) return <ul></ul>;
+  if (props.children[0].type != undefined) return <ul></ul>;
   return (
     <ul>
-      {props.children[0].split(',').map((item, index) => {
+      {props.children[0].split('--').map((item, index) => {
         return <li key = {`li_${index}`}>{item}</li>
       })}
     </ul>
