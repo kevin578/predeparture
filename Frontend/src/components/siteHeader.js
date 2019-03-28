@@ -1,10 +1,11 @@
-import { connect } from 'react-redux'
-import styled from 'styled-components'
-import axios from 'axios'
-import { Link, navigate } from 'gatsby'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+import axios from 'axios';
+import { Link, navigate } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Amplify, { Auth } from 'aws-amplify'
+import { Menu } from '@material-ui/icons';
 import {
   setLoginState,
   setContent,
@@ -12,9 +13,12 @@ import {
   setUserInfo,
   editProgress,
   clearUserInfo
-} from '../state/actions'
-import queryString from 'query-string'
-import AuthCheck from './AuthCheck'
+} from '../state/actions';
+import queryString from 'query-string';
+import AuthCheck from './AuthCheck';
+import media from "./Subject/mediaQueries";
+import ReactSVG from "react-svg";
+
 
 Amplify.configure({
   Auth: {
@@ -46,6 +50,10 @@ const Title = styled(Link)`
   font-size: 30px;
   margin-left: 60px;
   text-decoration: none;
+  ${media.tablet` 
+    font-size: 18px;
+    margin-left: 30px;
+  `}
 `
 
 const Links = styled.div`
@@ -56,24 +64,76 @@ const Links = styled.div`
   line-height: 60px;
   margin-right: 100px;
   width: 300px;
+  ${media.tablet` 
+    font-size: 14px;
+    width: 220px;
+    margin-top: 2px;
+    margin-right: 50px;
+  `}
+  ${media.bigPhone`
+    display: ${(props)=> props.show ? 'block' : 'none'};
+    position: absolute;
+    width: 200px;
+    height: 242px;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    top: 60px;
+    left: 55%;
+  `}
 `
 
 const HeaderItem = styled.a`
   cursor: pointer;
   text-decoration: none;
   color: #fff;
+  ${media.bigPhone`
+    color: black;
+    display: block;
+    padding-left: 10px;
+    border-bottom: 1px black solid;
+  `}
 `
 
 const HeaderLink = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   color: #fff;
+  ${media.bigPhone`
+    color: black;
+    display: block;
+    padding-left: 10px;
+    border-bottom: 1px black solid;
+  `}
 `
 
+const Hamburger = styled.div`
+  color: white;
+  margin-top: 15px;
+  margin-left: 30px;
+  margin-right: 15px;
+  display: none;
+  ${media.bigPhone`display: block;`}
+  ${media.smallPhone`margin-left: 10px;`}
+`;
+
+
 class SiteHeader extends Component {
+
+  state = {
+    showHamburger: false
+  }
+
   componentDidMount() {
     this.getContent()
     this.setPageNumber()
+  }
+
+  hamburgerClicked = () => {
+    this.setState((prevState)=> {
+      return {
+        showHamburger: !(prevState.showHamburger)
+      };
+    });
   }
 
   getContent = async () => {
@@ -100,7 +160,7 @@ class SiteHeader extends Component {
     return (
       <Wrapper>
         <Title to="/">Study Abroad Pre-Departure</Title>
-        <Links>
+        <Links show = {this.state.showHamburger}>
           <AuthCheck role="admin">
             <HeaderLink to="/edit-page/">Editor</HeaderLink>
             <HeaderLink to="/student-list/">Students</HeaderLink>
@@ -110,6 +170,9 @@ class SiteHeader extends Component {
             <HeaderItem onClick={this.logout}>Logout</HeaderItem>{' '}
           </AuthCheck>
         </Links>
+        <Hamburger onClick = {this.hamburgerClicked}>
+          <Menu style = {{fontSize: 30}}/>
+        </Hamburger>
       </Wrapper>
     )
   }

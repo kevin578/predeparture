@@ -27,6 +27,7 @@ import AuthCheck from '../components/AuthCheck'
 import LoadUserInfo from '../components/LoadUserInfo'
 import MediaModal from '../components/MedialModal'
 import { updatePageNumber } from '../functions'
+import media from "../components/Subject/mediaQueries";
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -58,6 +59,11 @@ const EditorContainer = styled.div`
   height: 200px;
   grid-column-start: 2;
   grid-row-start: 2;
+  ${media.tablet`
+    /* grid-column-start: 1;
+    margin-left: 30px; */
+  `}
+
 `
 
 const HomemadeButton = styled.div`
@@ -76,6 +82,12 @@ const IconContainer = styled.div`
   margin-top: 50px;
   display: flex;
   flex-direction: column;
+  ${media.tablet`
+    /* grid-column-start: 2;
+    margin-left: 150px;
+    padding-top: 25px; */
+  `}
+
 `
 
 const iconStyles = {
@@ -83,31 +95,6 @@ const iconStyles = {
   marginBottom: 20,
   cursor: "pointer"
 }
-
-const NewPageButton = styled(HomemadeButton)`
-  background: #504db7;
-  grid-column-start: 3;
-  grid-row-start: 2;
-  margin-top: 50px;
-`
-const DeletePageButton = styled(HomemadeButton)`
-  background: #d37e7e;
-  grid-column-start: 3;
-  grid-row-start: 3;
-`
-
-const SaveButton = styled(HomemadeButton)`
-  background: #7ed399;
-  grid-column-start: 2;
-  grid-row-start: 4;
-`
-
-const MediaButton = styled(HomemadeButton)`
-  background: #57b3e5;
-  grid-column-start: 3;
-  grid-row-start: 3;
-  margin-top: 75px;
-`
 
 const ErrorMessage = styled.p`
   grid-column-start: 2;
@@ -121,6 +108,10 @@ const Content = styled.div`
   width: 800px;
   grid-column-start: 2;
   grid-row-start: 5;
+  ${media.tablet`
+    /* grid-column-start: 1;
+    margin-left: 30px; */
+  `}
 `
 
 const Progress = styled(CircularProgress)`

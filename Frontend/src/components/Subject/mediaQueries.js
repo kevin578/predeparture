@@ -3,7 +3,12 @@ import {css} from "styled-components";
 const sizes = {
     smallLaptop: 1050,
     tablet: 900,
-    bigPhone: 550
+    bigPhone: 550,
+    smallLaptopLoggedOut: 1140,
+    tabletLoggedOut: 860,
+    bigPhoneLoggedOut: 520,
+    mediumPhone: 475,
+    smallPhone: 375
 };
 
 // Iterate through the sizes and create a media template

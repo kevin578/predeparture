@@ -8,16 +8,17 @@ import { setPage, setPageKey, setSubject, setSubjectURL } from '../../state/acti
 import media from './mediaQueries'
 
 const Body = styled.div`
-  display: flex;
+
 `
 const Content = styled.div`
-  margin-top: 40px;
+  margin-top: 70px;
   margin-left: 430px;
-  ${media.tablet`margin-left: 50px;`}
-  ${media.tablet`margin-left: 10px;`}
-  width: 60%;
-  ${media.tablet`width: 95%;`}
+  /* ${media.tablet`margin-left: 100px;`} */
+  width: 800px;
+  ${media.tablet`width: 400px;`}
   padding-bottom: 120px;
+  display: block;
+
 `
 
 class Subject extends React.Component {

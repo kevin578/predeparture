@@ -4,6 +4,7 @@ import SidebarItem from "./SidebarItem";
 import { connect } from "react-redux";
 import { setPageLength } from '../../state/actions'
 import media from "./mediaQueries";
+import { ArrowRight } from '@material-ui/icons';
 
 const Wrapper = styled.section`
   width: 340px;
@@ -12,7 +13,11 @@ const Wrapper = styled.section`
   position: fixed;
   overflow: auto;
   margin-top: 60px;
-  ${media.tablet`display: none;`}
+  z-index: 101;
+  ${media.tablet`
+    /* display: absolute;
+    left: -270px; */
+  `}
 `;
 
 const SidebarSubject = styled.div`
@@ -48,6 +53,10 @@ const SidebarCourseName = styled.p`
   bottom: 10px;
   font-style: italic;
 `;
+
+const Arrow = styled(ArrowRight)`
+  font-size: 60px;
+`
 
 class Sidebar extends React.Component {
   componentDidMount(){
@@ -119,11 +128,6 @@ class Sidebar extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    // completed: state.completed,
-    // subject: state.subjectURL,
-    // subjectName: state.subject,
-    // achievements: state.achievements,
-    // subjectURL: state.subjectURL,
     page: state.page,
     content: state.content
   };

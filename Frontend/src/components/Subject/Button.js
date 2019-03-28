@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
-import { withRouter } from 'react-router'
 import { setPage, editProgress } from '../../state/actions'
 import { navigate } from 'gatsby'
 import { connect } from 'react-redux'
