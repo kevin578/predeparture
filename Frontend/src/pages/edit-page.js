@@ -28,6 +28,7 @@ import LoadUserInfo from '../components/LoadUserInfo'
 import MediaModal from '../components/MedialModal'
 import { updatePageNumber } from '../functions'
 import media from "../components/Subject/mediaQueries";
+import { addContentToHistory, getContentHistory } from "../lib/crudFunctions";
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -161,68 +162,58 @@ class editPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      editorContent: '',
-      sidebarContent: '',
-      title: '',
       isSaving: false,
       warning: '',
       showDeleteModal: false,
       showMediaModal: false,
-      href: () => (typeof window !== `undefined` ? window.location.href : ''),
-      justDeleted: false
     }
   }
 
-  componentDidMount() {
-    this.loadContent()
-    if (this.props.user.isLoggedIn === false) navigate('/login/')
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.page.number != this.state.href) {
-      if (this.state.justDeleted) {
-        this.setState({justDeleted: false})
-        return;
-      }
-      const oldTitle = this.state.title
-      const oldContent = this.state.editorContent
-      const { pageNumber } = queryString.parse(prevProps.location.search)
-      this.setContent()
-      this.setState({ href: prevProps.page.number })
-      let { contentArray } = prevProps.content
-      if (!contentArray[pageNumber]) return
-      contentArray[pageNumber].title = oldTitle
-      contentArray[pageNumber].content = oldContent
-      this.props.setContent(contentArray)
-    }
-  }
-
-  loadContent = async () => {
-    const content = await axios.get(
-      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getContent'
-    )
-    this.props.setContent(content.data)
-    this.setContent()
-  }
-
-  setContent = async () => {
-    const { page } = this.props
-    const content = this.props.content.contentArray
-    if (!content[page.number]) return
-    const title = content[page.number].title
-    const editorContent = content[page.number].content
-    this.setState({ title, editorContent, content })
-  }
-
-  onChange = event => {
-    const { name, value } = event.target
+  onTitleChange = event => {
+    const { value } = event.target
     if (typeof window !== `undefined`) window.onbeforeunload = () => ''
-    this.setState({ [name]: value })
+    this.updateCurrentTitle(value);
   }
 
   onEditorChange = newValue => {
-    if (typeof window !== `undefined`) window.onbeforeunload = () => ''
-    this.setState({ editorContent: newValue })
+    if (typeof window !== `undefined`) window.onbeforeunload = () => '';
+    this.updateCurrentContent(newValue);
+  }
+
+  contentIsAvailable = ()=> {
+    const {content, page} = this.props;
+    if (!content.contentArray) return false
+    if (!content.contentArray[page.number]) return false;
+    return true;
+  }
+
+  getCurrentTitle = ()=> {
+    const {content, page} = this.props;
+    if (!this.contentIsAvailable()) return ""
+    return content.contentArray[page.number].title;
+  }
+
+  updateCurrentTitle = (newTitle)=> {
+    const {content, page, setContent} = this.props;
+    if (!this.contentIsAvailable()) return "";
+    let newItems = content.contentArray;
+    
+    newItems[page.number].title = newTitle;
+    setContent(newItems);
+  }
+
+  getCurrentContent = ()=> {
+    const {content, page} = this.props;
+    if (!this.contentIsAvailable()) return ""
+    return content.contentArray[page.number].content;
+  }
+
+  updateCurrentContent = (newContent)=> {
+    const {content, page, setContent} = this.props;
+    if (!this.contentIsAvailable()) return "";
+    let newItems = [...content.contentArray];
+    newItems[page.number].content = newContent;
+    setContent(newItems);
   }
 
   newPage = () => {
@@ -232,11 +223,12 @@ class editPage extends React.Component {
       key: short.generate(),
       content: '<Header>New Item</Header>',
     }
+
     let { contentArray } = this.props.content
     const { page } = this.props
-    contentArray.splice(page.number + 1, 0, newItem)
+    contentArray.splice(parseInt(page.number) + 1, 0, newItem)  
     this.props.setContent(contentArray)
-    updatePageNumber(page.number + 1)
+    updatePageNumber(parseInt(page.number) + 1)
   }
 
   deleteItem = () => {
@@ -249,37 +241,25 @@ class editPage extends React.Component {
     setContent(newContent)
     const newPageNumber = parseInt(page.number) > 0 ? parseInt(page.number) - 1 : 0
     updatePageNumber(newPageNumber);
-    this.setContent();
     this.setState({
-      title: newContent[newPageNumber].title,
-      content: newContent[newPageNumber].content,
       showDeleteModal: false,
-      href: page.number,
-      justDeleted: true
     })
 
 
   }
 
   saveContent = async () => {
-    const { editorContent, title } = this.state
-    const { page, setContent } = this.props
-    let newContent = this.props.content.contentArray
-    newContent[page.number].title = title
-    if (!title) return this.setState({ warning: 'Title cannot be blank.' })
-    if (!editorContent)
+    const { page, setContent, user, content } = this.props
+    const userName = `${user.firstName} ${user.lastName}`
+
+    if (!this.getCurrentTitle) return this.setState({ warning: 'Title cannot be blank.' })
+    if (!this.getCurrentContent)
       return this.setState({ warning: 'Content cannot be blank.' })
     this.setState({ isSaving: true })
-    newContent[page.number].content = editorContent
     this.setState({ warning: '' })
-    setContent(newContent)
     try {
-      const response = await axios.put(
-        'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/updateContent',
-        {
-          contentArray: newContent,
-        }
-      )
+      await addContentToHistory(content.contentArray, userName);
+
     } catch (e) {
       console.log(e)
     }
@@ -293,7 +273,6 @@ class editPage extends React.Component {
     } else {
       return (
         <React.Fragment>
-          {/* <SaveButton onClick={this.saveContent}>Save</SaveButton> */}
           <ErrorMessage>{this.state.warning}</ErrorMessage>
         </React.Fragment>
       )
@@ -301,6 +280,9 @@ class editPage extends React.Component {
   }
 
   render() {
+    const { page } = this.props;
+    const content = this.props.content.contentArray
+
     return (
       <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
         <Wrapper>
@@ -313,8 +295,8 @@ class editPage extends React.Component {
           <EditorContainer>
             <TitleLabel>Title:</TitleLabel>
             <TitleInput
-              value={this.state.title}
-              onChange={this.onChange}
+              value= {this.getCurrentTitle()}
+              onChange={this.onTitleChange}
               name="title"
             />
             {typeof window !== 'undefined' && (
@@ -322,7 +304,7 @@ class editPage extends React.Component {
                 mode="html"
                 theme="solarized_light"
                 onChange={this.onEditorChange}
-                value={this.state.editorContent}
+                value={this.getCurrentContent()}
                 name="editor"
                 editorProps={{ $blockScrolling: true }}
                 width="500px"
@@ -340,18 +322,9 @@ class editPage extends React.Component {
             <AddCircle style = {iconStyles} onClick={this.newPage}/>
             <Delete  style = {iconStyles} onClick={() => this.setState({ showDeleteModal: true })}/>
             <Image style = {iconStyles} onClick={() => this.setState({ showMediaModal: true })}/>
+            
             <Save style = { iconStyles } onClick={this.saveContent}/>
           </IconContainer>
-          {/* <NewPageButton onClick={this.newPage}>Add New Page</NewPageButton>
-          <DeletePageButton
-            onClick={() => this.setState({ showDeleteModal: true })}
-          >
-            Delete Page
-          </DeletePageButton>
-
-          <MediaButton onClick={() => this.setState({ showMediaModal: true })}>
-            Media
-          </MediaButton> */}
 
           {this.getButton()}
           <MediaModal
@@ -379,7 +352,7 @@ class editPage extends React.Component {
               </DeleteButton>
             </ButtonContainer>
           </Modal>
-          <Content>{renderContent(this.state.editorContent)}</Content>
+          <Content>{renderContent(this.getCurrentContent())}</Content>
         </Wrapper>
       </AuthCheck>
     )

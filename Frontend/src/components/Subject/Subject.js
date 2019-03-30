@@ -7,9 +7,7 @@ import Sidebar from './Sidebar'
 import { setPage, setPageKey, setSubject, setSubjectURL } from '../../state/actions'
 import media from './mediaQueries'
 
-const Body = styled.div`
-
-`
+const Body = styled.div``
 const Content = styled.div`
   margin-top: 70px;
   margin-left: 430px;

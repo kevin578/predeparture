@@ -18,6 +18,7 @@ import queryString from 'query-string';
 import AuthCheck from './AuthCheck';
 import media from "./Subject/mediaQueries";
 import ReactSVG from "react-svg";
+import {getContentHistory} from '../lib/crudFunctions'
 
 
 Amplify.configure({
@@ -137,10 +138,18 @@ class SiteHeader extends Component {
   }
 
   getContent = async () => {
-    const content = await axios.get(
-      'https://6qb13v2ut8.execute-api.us-east-1.amazonaws.com/dev/getContent'
-    )
-    this.props.setContent(content.data)
+    const contentArray = await getContentHistory();
+
+    const sortContent = ()=> {
+      const items = contentArray.data.Items
+      return contentArray.data.Items.sort((a,b)=> {
+          return b.time - a.time
+      })
+    }
+
+    const content = sortContent();
+    
+    this.props.setContent(content[0].content);
   }
 
   setPageNumber = () => {

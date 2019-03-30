@@ -80,3 +80,19 @@ functions:
           path: editProgress
           method: put
           cors: true
+
+  addItemToHistory: 
+    handler: contentHistoryRoutes.addItemToHistory
+    events:
+      - http:
+          path: addItemToHistory
+          method: put
+          cors: true
+
+  getItemHistory: 
+    handler: contentHistoryRoutes.getItemHistory
+    events:
+      - http:
+          path: getItemHistory
+          method: get
+          cors: true
