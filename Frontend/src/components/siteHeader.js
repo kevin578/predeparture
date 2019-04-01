@@ -1,25 +1,25 @@
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import axios from 'axios';
-import { Link, navigate } from 'gatsby';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import axios from 'axios'
+import { Link, navigate } from 'gatsby'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import Amplify, { Auth } from 'aws-amplify'
-import { Menu } from '@material-ui/icons';
+import { Menu } from '@material-ui/icons'
 import {
   setLoginState,
   setContent,
   setPage,
   setUserInfo,
   editProgress,
-  clearUserInfo
-} from '../state/actions';
-import queryString from 'query-string';
-import AuthCheck from './AuthCheck';
-import media from "./Subject/mediaQueries";
-import ReactSVG from "react-svg";
-import {getContentHistory} from '../lib/crudFunctions'
-
+  clearUserInfo,
+  setContentHistory,
+} from '../state/actions'
+import queryString from 'query-string'
+import AuthCheck from './AuthCheck'
+import media from './Subject/mediaQueries'
+import ReactSVG from 'react-svg'
+import { getContentHistory } from '../lib/crudFunctions'
 
 Amplify.configure({
   Auth: {
@@ -29,11 +29,11 @@ Amplify.configure({
     identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343',
     userPoolWebClientId: '4fd480nivo5qc7ssmjv02eqo24',
   },
-  Storage: { 
-    bucket:'clark-predeparture',
+  Storage: {
+    bucket: 'clark-predeparture',
     region: 'us-east-1',
-    identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343'
-   }
+    identityPoolId: 'us-east-1:ce09f285-c38e-4292-a412-1aa11f184343',
+  },
 })
 
 const Wrapper = styled.nav`
@@ -41,7 +41,7 @@ const Wrapper = styled.nav`
   height: 60px;
   background: #c00;
   position: fixed;
-  z-index: 99;
+  z-index: 104;
   display: flex;
   justify-content: space-between;
 `
@@ -72,7 +72,7 @@ const Links = styled.div`
     margin-right: 50px;
   `}
   ${media.bigPhone`
-    display: ${(props)=> props.show ? 'block' : 'none'};
+    display: ${props => (props.show ? 'block' : 'none')};
     position: absolute;
     width: 200px;
     height: 242px;
@@ -115,13 +115,11 @@ const Hamburger = styled.div`
   display: none;
   ${media.bigPhone`display: block;`}
   ${media.smallPhone`margin-left: 10px;`}
-`;
-
+`
 
 class SiteHeader extends Component {
-
   state = {
-    showHamburger: false
+    showHamburger: false,
   }
 
   componentDidMount() {
@@ -130,26 +128,29 @@ class SiteHeader extends Component {
   }
 
   hamburgerClicked = () => {
-    this.setState((prevState)=> {
+    this.setState(prevState => {
       return {
-        showHamburger: !(prevState.showHamburger)
-      };
-    });
+        showHamburger: !prevState.showHamburger,
+      }
+    })
   }
 
   getContent = async () => {
-    const contentArray = await getContentHistory();
+    const contentArray = await getContentHistory()
 
-    const sortContent = ()=> {
+    const sortContent = () => {
       const items = contentArray.data.Items
-      return contentArray.data.Items.sort((a,b)=> {
-          return b.time - a.time
+      return contentArray.data.Items.sort((a, b) => {
+        return b.time - a.time
       })
     }
 
-    const content = sortContent();
-    
-    this.props.setContent(content[0].content);
+    let content = sortContent()
+    this.props.setContentHistory(content)
+
+    //creates a deep copy of content
+    const currentContent = JSON.parse(JSON.stringify(content[0].content))
+    this.props.setContent(currentContent)
   }
 
   setPageNumber = () => {
@@ -169,7 +170,7 @@ class SiteHeader extends Component {
     return (
       <Wrapper>
         <Title to="/">Study Abroad Pre-Departure</Title>
-        <Links show = {this.state.showHamburger}>
+        <Links show={this.state.showHamburger}>
           <AuthCheck role="admin">
             <HeaderLink to="/edit-page/">Editor</HeaderLink>
             <HeaderLink to="/student-list/">Students</HeaderLink>
@@ -179,8 +180,8 @@ class SiteHeader extends Component {
             <HeaderItem onClick={this.logout}>Logout</HeaderItem>{' '}
           </AuthCheck>
         </Links>
-        <Hamburger onClick = {this.hamburgerClicked}>
-          <Menu style = {{fontSize: 30}}/>
+        <Hamburger onClick={this.hamburgerClicked}>
+          <Menu style={{ fontSize: 30 }} />
         </Hamburger>
       </Wrapper>
     )
@@ -194,5 +195,13 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setLoginState, setContent, setPage, setUserInfo, editProgress, clearUserInfo }
+  {
+    setLoginState,
+    setContent,
+    setPage,
+    setUserInfo,
+    editProgress,
+    clearUserInfo,
+    setContentHistory,
+  }
 )(SiteHeader)

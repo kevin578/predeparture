@@ -16,7 +16,7 @@ const modalStyles = {
     padding: 25,
   },
   overlay: {
-    zIndex: 100,
+    zIndex: 110,
   },
 }
 

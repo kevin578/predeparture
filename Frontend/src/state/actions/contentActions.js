@@ -4,3 +4,10 @@ export const setContent = (content)=> {
         payload: content
     }
 } 
+
+export const setContentHistory = (contentHistory)=> {
+    return {
+        type: "SET_CONTENT_HISTORY",
+        payload: contentHistory
+    }
+}

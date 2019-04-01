@@ -7,7 +7,7 @@ import brace from 'brace'
 import AceEditor from 'react-ace'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
-import { AddCircle, Delete, Image, Save } from '@material-ui/icons';
+import { AddCircle, Delete, Image, Save, History } from '@material-ui/icons';
 import Modal from 'react-modal'
 import ReactHtmlParser, {
   processNodes,
@@ -29,6 +29,7 @@ import MediaModal from '../components/MedialModal'
 import { updatePageNumber } from '../functions'
 import media from "../components/Subject/mediaQueries";
 import { addContentToHistory, getContentHistory } from "../lib/crudFunctions";
+import HistoryList from '../components/History';
 
 const Wrapper = styled.div`
   margin-top: -1px;
@@ -93,7 +94,7 @@ const IconContainer = styled.div`
 
 const iconStyles = {
   fontSize: 30,
-  marginBottom: 20,
+  marginBottom: 10,
   cursor: "pointer"
 }
 
@@ -127,7 +128,7 @@ const Progress = styled(CircularProgress)`
 
 const customStyles = {
   content: {
-    width: 380,
+    width: 390,
     height: 200,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -135,7 +136,7 @@ const customStyles = {
     padding: 0,
   },
   overlay: {
-    zIndex: 100,
+    zIndex: 110,
   },
 }
 
@@ -166,6 +167,7 @@ class editPage extends React.Component {
       warning: '',
       showDeleteModal: false,
       showMediaModal: false,
+      showHistory: false
     }
   }
 
@@ -257,12 +259,13 @@ class editPage extends React.Component {
       return this.setState({ warning: 'Content cannot be blank.' })
     this.setState({ isSaving: true })
     this.setState({ warning: '' })
+    
     try {
       await addContentToHistory(content.contentArray, userName);
-
     } catch (e) {
       console.log(e)
     }
+
     this.setState({ isSaving: false })
     if (typeof window !== `undefined`) window.onbeforeunload = null
   }
@@ -277,6 +280,14 @@ class editPage extends React.Component {
         </React.Fragment>
       )
     }
+  }
+
+  toggleHistory = ()=> {
+    this.setState((prevState)=> {
+      return {
+        showHistory: !prevState.showHistory
+      }
+    })
   }
 
   render() {
@@ -322,9 +333,10 @@ class editPage extends React.Component {
             <AddCircle style = {iconStyles} onClick={this.newPage}/>
             <Delete  style = {iconStyles} onClick={() => this.setState({ showDeleteModal: true })}/>
             <Image style = {iconStyles} onClick={() => this.setState({ showMediaModal: true })}/>
-            
+            <History style = {iconStyles} onClick={this.toggleHistory}/>
             <Save style = { iconStyles } onClick={this.saveContent}/>
           </IconContainer>
+          <HistoryList showHistory = {this.state.showHistory} />
 
           {this.getButton()}
           <MediaModal
@@ -353,6 +365,7 @@ class editPage extends React.Component {
             </ButtonContainer>
           </Modal>
           <Content>{renderContent(this.getCurrentContent())}</Content>
+
         </Wrapper>
       </AuthCheck>
     )

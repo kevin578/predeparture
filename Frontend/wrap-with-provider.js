@@ -1,6 +1,6 @@
-import React from 'react'
-import { Provider } from 'react-redux'
-import LoadUserInfo from './src/components/LoadUserInfo'
+import React from 'react';
+import { Provider } from 'react-redux';
+import LoadUserInfo from './src/components/LoadUserInfo';
 import createStore from './src/state/createStore'
 
 export const store = createStore()
