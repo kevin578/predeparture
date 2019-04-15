@@ -14,6 +14,10 @@ import { defaultContent } from '../lib/defaultGuideString'
 import SiteHeader from '../components/siteHeader'
 import AuthCheck from '../components/AuthCheck'
 import LoadUserInfo from '../components/LoadUserInfo'
+import marked from 'marked';
+import hljs from 'highlightjs';
+import axios from 'axios';
+
 
 const Page = styled.div`
   display: flex;
@@ -24,8 +28,6 @@ const EditorContainer = styled.div``
 const ContentContainer = styled.div`
   margin-top: 90px;
   margin-left: 120px;
-  height: 1000px;
-  width: 500px;
   padding: 10px;
 `
 
@@ -36,20 +38,31 @@ const Content = styled.div`
 
 export default class GuideEditor extends Component {
   state = {
-    editorContent: '',
+    markdown: '# header',
   }
 
   componentDidMount() {
-    this.setDefaultContent()
+    this.loadReadMe();
   }
 
-  setDefaultContent() {
-    this.setState({ editorContent: defaultContent })
+
+  loadReadMe = ()=> {
+   axios.get('https://raw.githubusercontent.com/kevin578/predeparture/master/Frontend/README.md').
+   then((resp)=> {
+    this.setState({markdown: resp.data})
+   })
+   .catch((err)=> {
+     console.log(err);
+   })
   }
 
-  onEditorChange = newValue => {
-    console.log(newValue)
-    this.setState({ editorContent: newValue })
+  getMarkdown = ()=> {
+    marked.setOptions({
+      highlight: function(code) {
+        return hljs.highlightAuto(code).value;
+      }
+    });
+    return { __html: marked(this.state.markdown) };
   }
 
   render() {
@@ -58,32 +71,8 @@ export default class GuideEditor extends Component {
       <AuthCheck authRedirect="/login" roleRedirect="/" role="admin">
         <Page>
           <SiteHeader />
-          <EditorContainer>
-            {typeof window !== 'undefined' && (
-              <AceEditor
-                mode="html"
-                theme="solarized_light"
-                onChange={this.onEditorChange}
-                value={this.state.editorContent}
-                name="editor"
-                editorProps={{ $blockScrolling: true }}
-                width="500px"
-                height="1200px"
-                fontSize={14}
-                showGutter={false}
-                wrapEnabled={true}
-                setOptions={{
-                  indentedSoftWrap: false,
-                }}
-                style={{
-                  top: 90,
-                  left: 40,
-                }}
-              />
-            )}
-          </EditorContainer>
           <ContentContainer>
-            <Content>{renderContent(this.state.editorContent)}</Content>
+          <div dangerouslySetInnerHTML={this.getMarkdown()}/>
           </ContentContainer>
         </Page>
       </AuthCheck>

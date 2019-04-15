@@ -4,7 +4,8 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2,
 } from 'react-html-parser'
-import { Body, Header, Video, Text, Image, Link, List } from '../components/Subject/SubjectStyles'
+import { Body, Header, Video, Image, Link, List } from '../components/Subject/SubjectStyles'
+import Text from '../components/Subject/Text';
 import Checkbox from '../components/Subject/Checkbox'
 import Question from '../components/Subject/Quiz'
 import Button from '../components/Subject/Button';
@@ -27,7 +28,7 @@ const editorTypes = (item, index) => {
 
   function handleText(text){
     if (!text) return;
-    return text.split('\n').map((str, index)=> <Text key = {key + index}>{str}</Text>);
+    return text.toString().split('\n').map((str, index)=> <Text key = {key + index}>{str}</Text>);
   }
 
   const key = `${item.type}${index}`
