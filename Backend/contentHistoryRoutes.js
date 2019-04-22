@@ -5,12 +5,20 @@ import { success, failure } from "./libs/response-lib";
 export async function addItemToHistory(event) {
     const dynamodb = new AWS.DynamoDB();
     const data = JSON.parse(event.body);
+
+    let TableName = 'predeparture-content-history';
+
+    if (data.stage === 'development') {
+      TableName = 'predeparture-content-dev'
+    }
+
+
     const params = {
-        TableName: "predeparture-content-history",
+        TableName,
         Item: {
           time: Date.now(),
           content: data.content,
-          user: data.user
+          user: data.user,
         }
       };
     try {
@@ -21,9 +29,17 @@ export async function addItemToHistory(event) {
     }
 }
 
-export async function getItemHistory() {
+export async function getItemHistory(event) {
+    let TableName = 'predeparture-content-history';
+    console.log()
+    if (event.queryStringParameters) {
+      if (event.queryStringParameters.stage === 'development') {
+      TableName = 'predeparture-content-dev'
+      }
+    }
+
     var params = {
-        TableName : 'predeparture-content-history',
+        TableName
       };
       
       try {

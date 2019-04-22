@@ -119,7 +119,7 @@ export default function MedialModal(props) {
   const getFileList = () =>
     fileList.map((item, index) => {
       return (
-        <FileListItem >
+        <FileListItem key = {`fileListItem${index}`}>
           <FilePath key={item.key}>{item.key}</FilePath>
           <FileCopy style={iconStyles} onClick={() => copyText(item.key)} />
           {!item.delete && (
