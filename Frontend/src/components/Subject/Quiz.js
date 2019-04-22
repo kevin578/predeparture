@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 import {addToRemainingQuestions, removeFromRemaingQuestions} from "../../state/actions";
 import {camelize, formAnimation} from "../../functions";
+import {parseForStyle} from '../../lib/parseForStyle';
 
 
 
