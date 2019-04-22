@@ -50,14 +50,13 @@ A button allows the user to go to the next item if all checkboxes are checked an
 
 ## Style
 
-Style tags can be used inside of tags to change the style of the text. 
+Style tags can be used inside of regular tags to change the style of the text. 
 
 ```html
 <text>
   #B# This text will be bold #B#
   #I# This text will be italicized #I#
   #U# This text will be underlined #U#
-  #BU# This text will be bolded and underlined #BU#
 </text>
 ```
 

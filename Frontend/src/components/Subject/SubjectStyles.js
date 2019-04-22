@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useState, useEffect } from 'react'
 import styled from 'styled-components'
 import media from './mediaQueries'
+import {parseForStyle} from '../../lib/parseForStyle';
 
 const Wrapper = styled.section`
   min-height: 800px;
@@ -97,12 +98,15 @@ export const Body = props => {
 }
 
 export const List = props => {
+  
+  const [textValue, setTextValue] = useState(props.children);
+
   if (!props.children[0]) return <ul></ul>;
   if (props.children[0].type != undefined) return <ul></ul>;
   return (
     <ul>
       {props.children[0].split('--').map((item, index) => {
-        return <li key = {`li_${index}`}>{item}</li>
+        return <li key = {`li_${index}`}>{parseForStyle(item)}</li>
       })}
     </ul>
   )

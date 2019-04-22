@@ -6,6 +6,7 @@ import { addCheckbox, removeCheckbox } from '../../state/actions'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MaterialCheckbox from '@material-ui/core/Checkbox'
+import {parseForStyle} from '../../lib/parseForStyle';
 
 
 const Container = styled.div`
